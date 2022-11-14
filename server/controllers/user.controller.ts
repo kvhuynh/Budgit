@@ -33,14 +33,6 @@ const registerUser = async (req: any, res: any) => {
     } catch (error: unknown) {
         return res.status(400).json(error);
     }
-    // User.create(req.body)
-    //     .then(( user: any ) => {
-    //         console.log("test");
-            
-    //         res.json({ msg: "registration successful", user: user })
-    //     })
-    //     .catch((err: any) => res.json(err))
-
 }
 
 
