@@ -35,7 +35,7 @@ const UserSchema = new mongoose.Schema({
 
 UserSchema.virtual("confirmPassword")
     .get(function(this: any) {
-        return `${this.confirmPassword}`;
+        return this._confirmPassword;
     })
     .set(function(this: any, value: any) {
         return this._confirmPassword = value;
