@@ -1,54 +1,58 @@
-// const jwt = require("jsonwebtoken");
-
-
-
-// const registerUser = async() => {
-//     register: (req: any, res: any) => {
-//         UserSchema.create(req.body)
-//             .then((user: typeof User) => {
-//                 res.json({ msg: "success!", user: user })
-//             })
-//             .catch((err: any) => res.json(err))
-//     }
-// }
-
-
-/** 
-* Registers user.
-* @param { req, res } parameterNameHere - Brief description of the parameter here. Note: For other notations of data types, please refer to JSDocs: DataTypes command.
-* @return {ReturnValueDataTypeHere} Brief description of the returning value here.
-*/
-
 export {}
-// const jwt = require("jswebtoken")
+
 const {
-    createUser
+    createUser,
+    loginUser,
+    getUser,
+    logoutUser,
 } = require("../services/user.service")
 
-const registerUser = async (req: any, res: any) => {
+const handleRegisterUser = async (req: any, res: any) => {
     
     try {
-        const user = await createUser(req.body);
+        const user = await createUser(req.body, res);
         return res.json(user);
-    } catch (error: unknown) {
+    } catch (error: any) {
+        
         return res.status(400).json(error);
     }
-}
+};
 
 
-const loginUser = (req: any, res: any) => {
-    res.json({ message: "Logging in user" })
+const handleLoginUser = async (req: any, res: any) => {
+    try {
+        const user = await loginUser(req.body, res);
+        return res.json(user)
+    } catch (error: any) {
 
-}
+        return res.status(400).json(error);
+    }
 
-const getUser = (req: any, res: any) => {
+};
+
+const handleGetUser = async (req: any, res: any) => {
     res.json({ message: "Getting user" })
 
-}
+};
+
+const handleGetAllUsers = async (req: any, res: any) => {
+    res.json({ message: "Getting all users" })
+};
+
+const handleLogoutUser = async (req: any, res: any) => {
+
+    try {
+        const user = await logoutUser(res);
+        return res.json(user);
+    } catch {
+        res.json( {message: "Logout failed"} )
+    }
+};
 
 module.exports = {
-    registerUser,
-    loginUser,
-    getUser
-}
-
+    handleRegisterUser,
+    handleLoginUser,
+    handleGetUser,
+    handleLogoutUser,
+    handleGetAllUsers
+};

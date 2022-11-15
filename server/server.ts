@@ -1,19 +1,23 @@
-const express = require("express")
-const cors = require("cors")
+const express = require("express");
+const cors = require("cors");
+const { userRouter } = require("./routes/user.routes");
+const cookieParser = require("cookie-parser");
 
-const port = 8000;
-
-const { userRouter } = require("./routes/user.routes")
-
-
-require("./config/mongoose.config")
 
 const app = express();
 
+const port = 8000;
+
+
+require("dotenv").config();
+
+require("./config/mongoose.config")
+
+
 app.use(cors());
-
 app.use(express.json());
-
+app.use(cookieParser());
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }))
 app.use("/api/users/", userRouter);
 
 
