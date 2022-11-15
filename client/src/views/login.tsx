@@ -9,3 +9,5 @@ export const Login = (props: any) => {
         </>
     )
 }
+
+export default Login;
