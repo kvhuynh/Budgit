@@ -2,7 +2,7 @@ export {}
 
 const secret = process.env.FIRST_SECRET_KEY;
 
-const { User } = require("../models/user.model");
+const User = require("../models/user.model");
 
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -11,9 +11,9 @@ const createUser = async (data: any, res: any) => {
     console.log("checking if email is available....");
 
     const { email } = data;
-    
-    const emailAvailable = await User.findOne({email: email})
 
+    const emailAvailable = await User.findOne({ where: { email: email } })
+    
     if (!emailAvailable) {
         console.log("service: creating user");
         const user = await User.create(data)
