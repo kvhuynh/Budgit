@@ -6,7 +6,7 @@ const { authenticate } = require("../config/jwt.config");
 const {
     handleRegisterUser,
     handleLoginUser,
-    handleGetUser,
+    handleGetOneUser,
     handleGetAllUsers,
     handleLogoutUser
 } = require("../controllers/user.controller");
@@ -14,9 +14,11 @@ const {
 const router = express.Router();
 
 router.post("/register", handleRegisterUser);
+
+
 router.post("/login", handleLoginUser);
-router.post("/me", handleGetUser);
 router.get("/users", authenticate, handleGetAllUsers); // inorder to access this route user must be authenticated via login or registration
 router.get("/logout", handleLogoutUser);
+router.get("/:id", handleGetOneUser);
 
 module.exports = { userRouter: router }

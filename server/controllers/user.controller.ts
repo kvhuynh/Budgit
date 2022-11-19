@@ -3,7 +3,7 @@ export {}
 const {
     createUser,
     loginUser,
-    getUser,
+    getOneUser,
     logoutUser,
 } = require("../services/user.service")
 
@@ -13,7 +13,6 @@ const handleRegisterUser = async (req: any, res: any) => {
         const user = await createUser(req.body, res);
         return res.json(user);
     } catch (error: any) {
-        
         return res.status(400).json(error);
     }
 };
@@ -30,8 +29,14 @@ const handleLoginUser = async (req: any, res: any) => {
 
 };
 
-const handleGetUser = async (req: any, res: any) => {
-    res.json({ message: "Getting user" })
+const handleGetOneUser = async (req: any, res: any) => {
+    try {
+        const user = await getOneUser(req.params.id);
+        return res.json(user);
+    } catch (error: any) {
+
+        return res.status(400).json(error);
+    }
 
 };
 
@@ -44,7 +49,7 @@ const handleLogoutUser = async (req: any, res: any) => {
     try {
         const user = await logoutUser(res);
         return res.json(user);
-    } catch {
+    } catch (error: any) {
         res.json( {message: "Logout failed"} )
     }
 };
@@ -52,7 +57,7 @@ const handleLogoutUser = async (req: any, res: any) => {
 module.exports = {
     handleRegisterUser,
     handleLoginUser,
-    handleGetUser,
+    handleGetOneUser,
     handleLogoutUser,
     handleGetAllUsers
 };

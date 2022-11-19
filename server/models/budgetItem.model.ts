@@ -1,12 +1,11 @@
 export { };
 
-import { User } from "./user.model"
+import { Budget } from "./budget.model"
 import { AllowNull, AutoIncrement, BelongsTo, Column, CreatedAt, ForeignKey, Model, Table, UpdatedAt } from 'sequelize-typescript';
 
-const bcrypt = require("bcrypt");
 
-@Table({tableName: 'budgets'})
-export class Budget extends Model {
+@Table({tableName: 'budget_items'})
+export class BudgetItem extends Model {
 
   @AllowNull(false)
   @AutoIncrement
@@ -19,26 +18,32 @@ export class Budget extends Model {
     allowNull: false,
     validate: {
       notNull: {
-        msg: "Budget name is required"
+        msg: "First name is required"
       }
     }
   })
-  name: string
+  firstName: string
 
   @Column({
-    field: "total_balance",
+    field: "balance",
+    allowNull: false,
     defaultValue: 0,
+    validate: {
+      notNull: {
+        msg: "Last name is required"
+      }
+    }
   })
   totalBalance: number;
 
-  @ForeignKey(() => User)
+  @ForeignKey(() => Budget)
   @Column({
-    field: "user_id"})
+    field: "budget_id"})
   
   userId: number;
   
-  @BelongsTo(() => User)
-  user: User;
+  @BelongsTo(() => Budget)
+  budget: Budget;
   
 
   @CreatedAt

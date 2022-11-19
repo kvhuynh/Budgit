@@ -1,8 +1,10 @@
 export {}
 
+import { Request, Response } from "express";
+
 const secret = process.env.FIRST_SECRET_KEY;
 
-const User = require("../models/user.model");
+import { User } from "../models/user.model";
 
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -12,8 +14,10 @@ const createUser = async (data: any, res: any) => {
 
     const { email } = data;
 
-    const emailAvailable = await User.findOne({ where: { email: email } })
-    
+    const emailAvailable = await User.findOne({ where: { email: email } });
+
+    console.log(emailAvailable);
+
     if (!emailAvailable) {
         console.log("service: creating user");
         const user = await User.create(data)
@@ -28,7 +32,9 @@ const createUser = async (data: any, res: any) => {
                     })
                     .json({ msg: "success", user: user });
             })
-            .catch((err: any) => res.json(err));
+            .catch((err: any) => {
+                throw {name: "PasswordsMismatchError", message: err}
+            });
 
         return user;
 
@@ -39,11 +45,8 @@ const createUser = async (data: any, res: any) => {
 }
 
 const loginUser = async (data: any, res: any) => {
-    const user = await User.findOne({email: data.email});
-    console.log(data.firstName);
-    console.log(user);
     
-    
+    const user = await User.findOne({ where: { email: data.email } });
     
     if (user === null) {
         throw { name: "UserNotFoundError", message: "incorrect credentials" };
@@ -56,7 +59,7 @@ const loginUser = async (data: any, res: any) => {
     }
 
     const userToken = jwt.sign( {
-        id: user._id
+        id: user.id // id: user._id
     }, process.env.SECRET_KEY );
 
     res
@@ -65,16 +68,26 @@ const loginUser = async (data: any, res: any) => {
         })
         .json({ msg: "success!" });
 
-}
+} // TODO to verify user decrypt the user token with alogrithm
 
 const logoutUser = async (res: any) => {
     res.clearCookie("usertoken");
+    console.log("logging out");
+    
     res.sendStatus(200);
 }
 
+const getOneUser = async (id: number, res: any) => {
+    console.log(id);
+    
+    const user = await User.findOne({ where: { id: id } })
+    
+    return user;
+}
 
 module.exports = {
     createUser,
     loginUser,
-    logoutUser
+    logoutUser, 
+    getOneUser
 };

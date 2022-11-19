@@ -1,30 +1,25 @@
-export{}
-
 const config = require("../config/mysql.config.json");
-const Sequelize = require("sequelize");
+
+import { Sequelize } from 'sequelize-typescript';
+import { User } from "../models/user.model"
+import { Budget } from "../models/budget.model"
+import { BudgetItem } from "../models/budgetItem.model"
 
 
 
+const sequelize = new Sequelize(
+    config.database, 
+    config.password, 
+    config.user, {
+        dialect: "mysql",
+        host: config.host,
+        define: {
+            timestamps: false
+        },
+    },
 
-const sequelize = new Sequelize(config.database, config.password, config.user, {
-    dialect: "mysql",
-    host: config.host,
-    define: {
-        timestamps: false
-    }
-});
+);
 
-// const verifyConnection = async () => {
-//     try {
-//         await sequelize.authenticate();
-//         console.log("Sequelize connection has been established successfully");
-        
-//     } catch(error: any){
-//         console.log("Failed to connect to database: ", error);
-    
-//     }
-// }
-
-// verifyConnection();
+sequelize.addModels([User, Budget, BudgetItem])
 
 module.exports = sequelize;
