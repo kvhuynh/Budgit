@@ -1,54 +1,55 @@
-export {};
-
-
-import jwtDecode from "jwt-decode";
 import { Budget } from "../models/budget.model";
 
-interface SessionToken {
-    id: number;
-    iat: number;
-    // whatever else is in the JWT.
-  }
+const { getSessionId } = require("../utilities/getSessionId.utilities")
 
-const secret = process.env.FIRST_SECRET_KEY;
+const getAllBudgets = async (userId: string) => { 
 
-// for a specific user
-const getAllBudgets = async (userId: string) => {
-    const id = jwtDecode<SessionToken> (userId);
+    const sessionId = getSessionId(userId);
     
-    const sessionId = id.id;
-
     const budgets = await Budget.findAll({ where: { user_id: sessionId } })
+
+    return budgets
+    
 }
 
-const getOneBudget = async () => {
+const getOneBudget = async (userId: string, budgetId: string) => {
+    const sessionId = getSessionId(userId);
 
+    const budget = await Budget.findOne({ where: { user_id: sessionId, id: budgetId } });
+    return budget;
 }
 
 const createBudget = async (userId: string, data: any) => {
-    const { name } = data;
-    const id = jwtDecode<SessionToken> (userId);
-    
-    const sessionId = id.id;
+    const sessionId = getSessionId(userId);
 
     data["userId"] = sessionId;
 
-    console.log("service: creating budget with name: " + name);
+    console.log("service: creating budget");
     const budget = await Budget.create(data);
-    return budget
+    return budget;
     
 }
 
-const updateBudget = async () => {
+const updateBudget = async (userId: string, budgetId: string, data: any) => {
+    console.log("service: updateBudget");
+    const { name } = data;
+    console.log(name);
+    
+    const sessionId = getSessionId(userId);
 
+    const budget = await Budget.update({ name: name }, { where: { user_id: sessionId, id: budgetId } });
+
+    return budget;
+    
 }
 
-const deleteBudget = async (id: number) => {
+const deleteBudget = async (userId: string, budgetId: string) => {
+    console.log(`service: deleting budget ${budgetId}`);
+    const sessionId = getSessionId(userId);
 
+    const budget = await Budget.destroy({ where: { user_id: sessionId, id: budgetId } });
+    return budget;
 }
-
-
-
 
 module.exports = {
     getAllBudgets,

@@ -15,12 +15,12 @@ const router = express.Router();
 
 router.post("/new", authenticate, handleCreateBudget);
 
-router.post("/update", authenticate, handleUpdateBudget)
+router.put("/:id/update", authenticate, handleUpdateBudget)
+
+router.get("/", handleGetAllBudgets);
 
 router.get("/:id", authenticate,handleGetOneBudget)
 
-router.get("/", authenticate, handleGetAllBudgets);
-
-router.delete("/delete", authenticate, handleDeleteBudget);
+router.delete("/:id/delete", authenticate, handleDeleteBudget);
 
 module.exports = { budgetRouter: router }

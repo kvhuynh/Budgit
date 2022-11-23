@@ -18,11 +18,11 @@ export class BudgetItem extends Model {
     allowNull: false,
     validate: {
       notNull: {
-        msg: "First name is required"
+        msg: "Item name required"
       }
     }
   })
-  firstName: string
+  name: string
 
   @Column({
     field: "balance",
@@ -34,13 +34,13 @@ export class BudgetItem extends Model {
       }
     }
   })
-  totalBalance: number;
+  balance: number;
 
   @ForeignKey(() => Budget)
   @Column({
     field: "budget_id"})
   
-  userId: number;
+  budgetId: number;
   
   @BelongsTo(() => Budget)
   budget: Budget;
