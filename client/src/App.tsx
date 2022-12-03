@@ -1,14 +1,5 @@
 import { Routes, Route} from 'react-router-dom';
 import './App.css';
-<<<<<<< Updated upstream
-import { Login } from './views/login'
-
-function App() {
-  return (
-    <Routes>
-      <Route path="/home" element={ <Login /> }/>
-    </Routes>
-=======
 import { LoginRegister } from './views/LoginRegister';
 import { Navbar } from "./components/Navbar";
 
@@ -25,7 +16,6 @@ function App() {
         <Route path="/budgets/:name" element={<ViewBudget/>}></Route>
       </Routes>
     </>
->>>>>>> Stashed changes
   );
 }
 
