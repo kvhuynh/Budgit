@@ -8,16 +8,20 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 import { useState, useEffect } from "react";
 
-import { createBudget } from "../services/internalApiService";
+import { createBudget, createBudgetItem } from "../services/internalApiService";
 
 interface State {
   name: string,
   description: string
+  balance: number
+  validationError: string
 }
 
 const initialState = {
   name: "",
-  description: ""
+  description: "",
+  balance: 0,
+  validationError: ""
 }
 
 
@@ -34,6 +38,7 @@ export const CreateBudgetPopUp = (props: any) => {
 
   const handleClose = () => {
       setOpen(false)
+      setBudgetValues(initialState)
   }
 
   const handleChange =
@@ -44,28 +49,38 @@ export const CreateBudgetPopUp = (props: any) => {
 
   const handleSubmit = () => {
     setOpen(false)
-    createBudget(budgetValues)
-      .then((budget: any) => {
-        props.reload();
-        setBudgetValues({...budgetValues, name: "", description: ""})
-        
-      })
-      .catch((error: any) => {
-        console.log(error);
-        
-      })
+    if (!props.createBudgetItem) {
+      createBudget(budgetValues)
+        .then((budget: any) => {
+          props.reload();
+          
+        })
+        .catch((error: any) => {
+          console.log(error);
+          setBudgetValues({ ...budgetValues, validationError: "Please enter a name for your budget" })
+          setOpen(true)
+        })
+        setBudgetValues(initialState);
+    } else {
+      createBudgetItem(budgetValues, props.budgetId)
+        .then(() => props.reload())
+    }
   }
 
     return (
       <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      {props.createBudgetItem ? <Button variant="outlined" onClick={handleClickOpen}> 
+      + Create Budget Item
+      </Button> :       <Button variant="outlined" onClick={handleClickOpen}>
       + Create Budget
-      </Button>
+      </Button>}
+
+
       <Dialog open={open} onClose={handleClose}>
       <DialogTitle>New Budget</DialogTitle>
       <DialogContent>
           <DialogContentText>
-          Enter a name and description for your budget!
+          Enter a name and description for your budget { props.createBudgetItem ? "item" : "" }!
           </DialogContentText>
           <TextField
           autoFocus
@@ -76,6 +91,16 @@ export const CreateBudgetPopUp = (props: any) => {
           variant="standard"
           onChange={handleChange("name")}
           />
+          { budgetValues.validationError }
+          { props.createBudgetItem ? <TextField
+          autoFocus
+          margin="dense"
+          id="balance"
+          label="Initial amount"
+          fullWidth
+          variant="standard"
+          onChange={handleChange("balance")}
+          /> : ""}
          <TextField
           autoFocus
           margin="dense"

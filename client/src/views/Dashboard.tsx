@@ -13,7 +13,7 @@ import { CreateBudgetPopUp } from "../components/CreateBudgetPopUp"
 
 import { Link } from "react-router-dom";
 
-import { getCurrentUser, logoutUser, getAllBudgets } from "../services/internalApiService"
+import { getCurrentUser, logoutUser, getAllBudgets, deleteBudget } from "../services/internalApiService"
 
 
 interface State {
@@ -37,13 +37,10 @@ export const Dashboard = () => {
     useEffect(() => {
         getCurrentUser()
             .then((user: any) => {
-                // setValues({...values, firstName: user.firstName})  
-                console.log(values);
-
                 getAllBudgets()
                     .then((budgets: any) => {                        
                         setValues({...values, firstName: user.firstName, budgets: budgets})
-                        console.log(values);
+
                     })
                     .catch((err: any) => {
                         console.log(err);
@@ -57,16 +54,16 @@ export const Dashboard = () => {
     }, [values.reload])
 
     const handleReloadOnCreate = () => {
-        setValues({...values, reload: !values.reload}) // do oopposite
-        
+        setValues({...values, reload: !values.reload}) 
     }
+
 
     return (
         <>
             <div>
                 Welcome {values.firstName}
                 <br />
-                <CreateBudgetPopUp reload={() => handleReloadOnCreate()}></CreateBudgetPopUp>
+                <CreateBudgetPopUp reload={() => handleReloadOnCreate()} createBudgetItem={false}></CreateBudgetPopUp>
             </div>
             <div>
                 <Box 
@@ -85,10 +82,6 @@ export const Dashboard = () => {
                                     <CardContent>
                                         <Typography sx={{ fontSize: 25 }} color="text.secondary" gutterBottom>
                                             {budget.name}
-                                            <span>
-                                                <EditIcon></EditIcon>
-                                                <DeleteIcon></DeleteIcon>
-                                            </span>
                                         </Typography>
                                         <Typography variant="body2">
                                             Current Balance: ${budget.totalBalance}

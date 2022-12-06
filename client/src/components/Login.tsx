@@ -29,10 +29,10 @@ const initialState = {
 export const Login = () => {
     const navigate = useNavigate();
 
-    useEffect(() => {
-        console.log(values);
+    // useEffect(() => {
+    //     console.log(values);
         
-    })
+    // })
 
     const [values, setValues] = useState<State>(initialState);
 
@@ -41,7 +41,6 @@ export const Login = () => {
 
         loginUser(values)
             .then((user) => {
-                console.log(user);
                 
                 navigate(`/dashboard/`);
             })
@@ -94,7 +93,7 @@ export const Login = () => {
                   }
                 />
               </FormControl>
-              {values.validationError} 
+              {values.validationError}
           </Box>
           <Button variant="outlined" type="submit">Submit</Button>
         </form>
