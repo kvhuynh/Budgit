@@ -26,7 +26,7 @@ interface State {
     budgetItems: Array<any>
 }
 
-export const ViewBudget = () => {
+export const ViewBudget = (props: any) => {
 
     const initialState = {
         id: -1,
@@ -45,16 +45,18 @@ export const ViewBudget = () => {
     useEffect(() => {
         getOneBudget(name!)
             .then((currentBudget: any) => {
+                console.log("current balance for this budget is: " + currentBudget.totalBalance);
+                
                 getAllBudgetItemsByBudget(currentBudget.id)
-                .then((budgetItems: any) => {
-                    setBudgetDetails({...budgetDetails, id: currentBudget.id, name: currentBudget.name, description: currentBudget.description, budgetItems: budgetItems})
-                    })
+                    .then((budgetItems: any) => {    
+                        setBudgetDetails({...budgetDetails, id: currentBudget.id, name: currentBudget.name, description: currentBudget.description, totalValue: currentBudget.totalBalance, budgetItems: budgetItems})
+                        })
             })
             .catch((error: any) => {
-                console.log(error);
-                
+                console.log(error); 
             })
     }, [budgetDetails.reload])
+
 
     const handleNavigate = (location: string) => {
         navigate(`/${location}`)
@@ -72,8 +74,10 @@ export const ViewBudget = () => {
     }
 
     const handleReloadOnCreate = () => {
-        
-        setBudgetDetails({...budgetDetails, reload: !budgetDetails.reload}) 
+        getAllBudgetItemsByBudget(budgetDetails.id)
+            .then((budget: any) => {
+                setBudgetDetails({ ...budgetDetails, reload: !budgetDetails.reload })
+            })
     }
 
     return (
@@ -102,10 +106,10 @@ export const ViewBudget = () => {
                          flexWrap: "wrap"
                         }}
                 >
+
                     {budgetDetails.budgetItems.map((budgetItem) => {
                         const { name } = budgetItem
-                        console.log(budgetItem);
-                              
+                        console.log(budgetDetails.totalValue);
                         return (
                             <div key={ name }>
                                 <Card variant="outlined" sx={{width: 200}}>
@@ -122,8 +126,10 @@ export const ViewBudget = () => {
                                 </CardActionArea>
                                 </Card>
                             </div>
+                            
                         )
-                    })}
+                    })
+                    }
                 </Box>
             </div>
 

@@ -7,11 +7,13 @@ import {
 	BelongsTo,
 	Column,
 	CreatedAt,
+	DataType,
 	ForeignKey,
 	Model,
 	Table,
 	UpdatedAt,
 } from "sequelize-typescript";
+import { Sequelize } from "sequelize";
 
 @Table({ tableName: "budget_items" })
 export class BudgetItem extends Model {
@@ -22,9 +24,8 @@ export class BudgetItem extends Model {
 
 	@Column({
 		field: "name",
-		allowNull: false,
 		validate: {
-			notNull: {
+			notEmpty: {
 				msg: "Item name required",
 			},
 		},
@@ -33,11 +34,10 @@ export class BudgetItem extends Model {
 
 	@Column({
 		field: "balance",
-		allowNull: false,
 		defaultValue: 0.0,
 		// validate: {
-		//   notNull: {
-		//     msg: "Last name is required"
+		//   notEmpty: {
+		//     msg: "Price"
 		//   }
 		// }
 	})
@@ -47,6 +47,12 @@ export class BudgetItem extends Model {
 		field: "description",
 	})
 	description: string;
+
+	@Column({
+		field: "history",
+		type: DataType.ARRAY(DataType.STRING)
+	})
+	history: string
 
 	@ForeignKey(() => Budget)
 	@Column({

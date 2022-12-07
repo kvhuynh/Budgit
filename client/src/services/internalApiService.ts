@@ -46,6 +46,9 @@ export const getAllBudgets = async () => {
 export const getOneBudget = async (budgetName: string) => {
 
     const res = await http.get("/budgets/" + budgetName)
+    console.log(res.data);
+    
+
     return res.data  
 }
 
@@ -58,11 +61,16 @@ export const deleteBudget = async (budgetId: number) => {
 export const createBudgetItem = async (budgetItemData: Object, budgetId: number) => {
     
     const res = await http.post(`/budgetItems/${budgetId}/new`, budgetItemData)
+    console.log(res.data);
+    
+
     return res.data;
 }
 
 export const getAllBudgetItemsByBudget = async (budgetId: number) => {
 
     const res = await http.get(`/budgetItems/${budgetId}`)
+    console.log(res.data);
+    
     return res.data;
 }

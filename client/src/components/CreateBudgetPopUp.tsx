@@ -62,8 +62,18 @@ export const CreateBudgetPopUp = (props: any) => {
         })
         setBudgetValues(initialState);
     } else {
+      console.log("i am here");
+      
       createBudgetItem(budgetValues, props.budgetId)
-        .then(() => props.reload())
+        .then(() => {
+          console.log("wtf");
+          
+          props.reload()
+        })
+        .catch((error: any) => {
+          console.log(error)
+          
+        })
     }
   }
 

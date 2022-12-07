@@ -7,18 +7,22 @@ const {
 } = require("../services/budgetItem.service");
 
 const handleGetAllBudgetItems = async (req: any, res: any) => {
-	try {
-		const budgetItems = await getAllBudgetItems(
+	try {	
+		const budgetItems  = await getAllBudgetItems(
 			req.cookies.usertoken,
 			req.params.budgetId
 		);
 		return res.json(budgetItems);
-	} catch (error: any) {}
+	} catch (error: any) {		
+		return res.status(400).json(error);
+	}
 };
 
 const handleGetOneBudgetItem = async (req: any, res: any) => {
 	try {
-	} catch (error: any) {}
+	} catch (error: any) {
+		return res.status(400).json(error);
+	}
 };
 
 const handleCreateBudgetItem = async (req: any, res: any) => {

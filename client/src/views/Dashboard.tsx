@@ -11,7 +11,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useEffect, useState } from "react";
 import { CreateBudgetPopUp } from "../components/CreateBudgetPopUp"
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { getCurrentUser, logoutUser, getAllBudgets, deleteBudget } from "../services/internalApiService"
 
@@ -33,6 +33,8 @@ const initialState = {
 export const Dashboard = () => {
 
     const [values, setValues] = useState<State>(initialState)
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         getCurrentUser()
@@ -47,8 +49,8 @@ export const Dashboard = () => {
                         
                     })
             })
-            
             .catch((error: any) => {
+                navigate("/")
                 console.log(error);  
             })
     }, [values.reload])
