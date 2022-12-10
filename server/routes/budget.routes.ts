@@ -15,7 +15,7 @@ const router = express.Router();
 
 router.post("/new", authenticate, handleCreateBudget);
 
-router.put("/:id/update", authenticate, handleUpdateBudget);
+router.put("/:name/update", authenticate, handleUpdateBudget);
 
 router.get("/", handleGetAllBudgets);
 

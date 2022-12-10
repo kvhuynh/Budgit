@@ -8,6 +8,7 @@ import { BudgetItem } from "../models/budgetItem.model"
 
 
 const sequelize = new Sequelize(
+    
     config.database, 
     config.password, 
     config.user, {
@@ -16,7 +17,9 @@ const sequelize = new Sequelize(
         define: {
             timestamps: false
         },
+        // logging: false // comment if you want to see sql queries
     },
+    
 
 );
 

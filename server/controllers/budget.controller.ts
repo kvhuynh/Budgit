@@ -10,21 +10,12 @@ const {
 
 const handleGetAllBudgets = async (req: any, res: any) => {
     try {
-        const budget = await getAllBudgets(req.cookies.usertoken);
-        return res.json(budget);
+        const budgets = await getAllBudgets(req.cookies.usertoken);
+        return res.json(budgets);
     } catch (error: any) {
         return res.status(400).json(error);
     }
 }
-
-// const handleGetOneBudget = async (req: any, res: any) => {
-//     try {    
-//         const budget = await getOneBudget(req.cookies.usertoken, req.params.id);
-//         return res.json(budget)
-//     } catch (error:any) {
-//         return res.status(400).json(error);
-//     }
-// }
 
 const handleGetOneBudget = async (req: any, res: any) => {
     try {    
@@ -45,8 +36,8 @@ const handleCreateBudget = async (req: any, res: any) => {
 }
 
 const handleUpdateBudget = async (req: any, res: any) => {
-    try {
-        const budget = await updateBudget(req.cookies.usertoken, req.params.id, req.body);
+    try {    
+        const budget = await updateBudget(req.cookies.usertoken, req.params.name, req.body);
         return res.json(budget);
     } catch (error: any) {
         return res.status(400).json(error);

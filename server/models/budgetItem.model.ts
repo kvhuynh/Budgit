@@ -13,7 +13,7 @@ import {
 	Table,
 	UpdatedAt,
 } from "sequelize-typescript";
-import { Sequelize } from "sequelize";
+import { Sequelize, TEXT } from "sequelize";
 
 @Table({ tableName: "budget_items" })
 export class BudgetItem extends Model {
@@ -50,7 +50,7 @@ export class BudgetItem extends Model {
 
 	@Column({
 		field: "history",
-		type: DataType.ARRAY(DataType.STRING)
+		type: TEXT
 	})
 	history: string
 

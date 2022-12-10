@@ -20,6 +20,7 @@ interface State {
     budgets: Array<any>
     firstName: string;
     lastName: string;
+    totalAccountBalance: number,
     reload: boolean,
 };
 
@@ -27,6 +28,7 @@ const initialState = {
     budgets: [],
     firstName: "",
     lastName: "",
+    totalAccountBalance: 0,
     reload: false
 }
 
@@ -41,7 +43,7 @@ export const Dashboard = () => {
             .then((user: any) => {
                 getAllBudgets()
                     .then((budgets: any) => {                        
-                        setValues({...values, firstName: user.firstName, budgets: budgets})
+                        setValues({...values, firstName: user.firstName, budgets: budgets.budgets, totalAccountBalance: budgets.totalBalance})
 
                     })
                     .catch((err: any) => {
@@ -65,7 +67,9 @@ export const Dashboard = () => {
             <div>
                 Welcome {values.firstName}
                 <br />
-                <CreateBudgetPopUp reload={() => handleReloadOnCreate()} createBudgetItem={false}></CreateBudgetPopUp>
+                <CreateBudgetPopUp reload={() => handleReloadOnCreate()} createBudgetItem={false} text={"create budget"}></CreateBudgetPopUp>
+                {values.totalAccountBalance}
+                
             </div>
             <div>
                 <Box 
@@ -86,7 +90,7 @@ export const Dashboard = () => {
                                             {budget.name}
                                         </Typography>
                                         <Typography variant="body2">
-                                            Current Balance: ${budget.totalBalance}
+                                            Limit: ${budget.totalBalance}
                                         </Typography>
                                     </CardContent>
                                 </CardActionArea>

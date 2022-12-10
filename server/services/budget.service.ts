@@ -8,7 +8,15 @@ const getAllBudgets = async (userId: string) => {
     
     const budgets = await Budget.findAll({ where: { user_id: sessionId } })
 
-    return budgets
+    let sum = 0;
+
+    for (let i = 0; i < budgets.length; i++) {
+        sum += budgets[i].totalBalance;
+        
+    }
+    
+
+    return {budgets: budgets, totalBalance: sum}
     
 }
 
@@ -28,7 +36,7 @@ const getOneBudget = async (userId: string, name: string) => {
 
 const createBudget = async (userId: string, data: any) => {
     const sessionId = getSessionId(userId);
-
+    
     data["userId"] = sessionId;
 
     console.log("service: creating budget");
@@ -37,14 +45,14 @@ const createBudget = async (userId: string, data: any) => {
     
 }
 
-const updateBudget = async (userId: string, budgetId: string, data: any) => {
+const updateBudget = async (userId: string, budgetName: string, data: any) => {
     console.log("service: updateBudget");
-    const { name } = data;
-    console.log(name);
+    // const { name } = data;
+    console.log(data.newTotalBalance);
     
     const sessionId = getSessionId(userId);
 
-    const budget = await Budget.update({ name: name }, { where: { user_id: sessionId, id: budgetId } });
+    const budget = await Budget.update({ total_balance: data.newTotalBalance }, { where: { user_id: sessionId, name: budgetName } });
 
     return budget;
     

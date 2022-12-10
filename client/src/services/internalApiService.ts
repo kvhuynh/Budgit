@@ -1,76 +1,92 @@
 import axios from "axios";
 
 const http = axios.create({
-    baseURL: "http://localhost:8000/api",
-    withCredentials: true,
-})
-
+	baseURL: "http://localhost:8000/api",
+	withCredentials: true,
+});
 
 // User operations
-export const createUser = async (potentialUser: Object) => {    
-
-    const res = await http.post("/users/register", potentialUser)
-    return res.data;
-}
+export const createUser = async (potentialUser: Object) => {
+	const res = await http.post("/users/register", potentialUser);
+	return res.data;
+};
 
 export const loginUser = async (potentialUser: Object) => {
-
-    const res = await http.post("/users/login", potentialUser); 
-    return res.data;
-}
+	const res = await http.post("/users/login", potentialUser);
+	return res.data;
+};
 
 export const getCurrentUser = async () => {
-
-    const res = await http.get("/users/")
-    return res.data   
-}
+	const res = await http.get("/users/");
+	return res.data;
+};
 
 export const logoutUser = async () => {
-    const res = await http.get("/users/logout")
-    
-    return res.data;
-}
+	const res = await http.get("/users/logout");
+
+	return res.data;
+};
 
 export const createBudget = async (budgetData: Object) => {
-    
-    const res = await http.post("/budgets/new", budgetData)
-    return res.data;
-}
+	console.log(budgetData);
+
+	const res = await http.post("/budgets/new", budgetData);
+	return res.data;
+};
 
 export const getAllBudgets = async () => {
-
-    const res = await http.get("/budgets/")
-    return res.data
-}
+	const res = await http.get("/budgets/");
+	return res.data;
+};
 
 export const getOneBudget = async (budgetName: string) => {
+	const res = await http.get("/budgets/" + budgetName);
+	console.log(res.data);
 
-    const res = await http.get("/budgets/" + budgetName)
-    console.log(res.data);
-    
+	return res.data;
+};
 
-    return res.data  
-}
+export const updateBudget = async (budgetName: string, updatedData: any) => {
+	console.log(updatedData);
+
+	const res = await http.put(
+		`/budgets/${budgetName}/update`,
+		updatedData.totalBudgetValue
+	);
+
+	console.log(res.data);
+
+	return res.data;
+};
 
 export const deleteBudget = async (budgetId: number) => {
+	const res = await http.delete(`/budgets/${budgetId}/delete`);
+	return res.data;
+};
 
-    const res = await http.delete(`/budgets/${budgetId}/delete`)
-    return res.data 
-}
+export const createBudgetItem = async (
+	budgetItemData: Object,
+	budgetId: number
+) => {
+	const res = await http.post(`/budgetItems/${budgetId}/new`, budgetItemData);
 
-export const createBudgetItem = async (budgetItemData: Object, budgetId: number) => {
+	return res.data;
+};
+
+export const getAllBudgetItemsByBudget = async (budget: any) => {
+	const res = await http.get(`/budgetItems/${budget.id}`);
+
+	return res.data;
+};
+
+export const updateBudgetItem = async (budgetItem: any) => {};
+
+export const deleteBudgetItem = async (budgetItemId: number) => {
+
+    console.log("deletingBudgetItem");
     
-    const res = await http.post(`/budgetItems/${budgetId}/new`, budgetItemData)
+	const res = await http.delete(`/budgetItems/${budgetItemId}/delete`);
     console.log(res.data);
     
-
-    return res.data;
-}
-
-export const getAllBudgetItemsByBudget = async (budgetId: number) => {
-
-    const res = await http.get(`/budgetItems/${budgetId}`)
-    console.log(res.data);
-    
-    return res.data;
-}
+	return res.data;
+};

@@ -6,9 +6,12 @@ const { getSessionId } = require("../utilities/getSessionId.utilities");
 const getAllBudgetItems = async (userId: string, budgetId: number) => {	
 	// get sum of all budgetItems and update the budget they are associated with
 
+    const sessionId = getSessionId(userId);
+	
 	let sum = 0;
 	
-    const sessionId = getSessionId(userId);
+	const budget = await Budget.findOne({ where: { id: budgetId } })	
+	
 	const budgetItems = await BudgetItem.findAll({
 		where: { budget_id: budgetId },
 	});
@@ -17,10 +20,8 @@ const getAllBudgetItems = async (userId: string, budgetId: number) => {
 	for (let i = 0; i < budgetItems.length; i++) {
 		sum += budgetItems[i].dataValues.balance;
 	}
-	
-	await Budget.update({ totalBalance: sum }, { where: { user_id: sessionId, id: budgetId } })
 
-	return budgetItems;
+	return {budgetItems: budgetItems, sum: sum};
 };
 
 const getOneBudgetItem = async (budgetId: string) => {
@@ -31,9 +32,19 @@ const getOneBudgetItem = async (budgetId: string) => {
 };
 
 const createBudgetItem = async (budgetId: string, data: any) => {
+	const dateTime = new Date();
 	data["budgetId"] = budgetId;
+	data["balance"] = data["totalBalance"] 
+
+	if (data["balance"] !== 0) {
+		data["history"] = []
+		data["history"].push([(dateTime.toISOString().slice(0,10)), data["balance"]])
+		data["history"] = JSON.stringify(data["history"])
+	}
+	console.log(data);
+	
 	const budgetItem = await BudgetItem.create(data);
-	console.log(budgetItem);
+
 	
 	return budgetItem;
 };
@@ -42,7 +53,10 @@ const editBudgetItem = async (id: number, data: any) => {
 
 };
 
-const deleteBudgetItem = async () => {};
+const deleteBudgetItem = async (budgetId: number) => {
+	const deletedBudgetItem = await BudgetItem.destroy({ where: { id: budgetId  } })
+	return deletedBudgetItem;
+};
 
 module.exports = {
 	getAllBudgetItems,

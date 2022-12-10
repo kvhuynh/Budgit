@@ -21,6 +21,6 @@ router.get("/:budgetId", handleGetAllBudgetItems);
 
 router.get("/:id", authenticate, handleGetOneBudgetItem)
 
-router.delete("/:id/delete", authenticate, handleDeleteBudgetItem);
+router.delete("/:budgetId/delete", authenticate, handleDeleteBudgetItem);
 
 module.exports = { budgetItemRouter: router }
