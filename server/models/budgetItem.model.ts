@@ -4,6 +4,8 @@ import { Budget } from "./budget.model";
 import {
 	AllowNull,
 	AutoIncrement,
+	BeforeCreate,
+	BeforeUpdate,
 	BelongsTo,
 	Column,
 	CreatedAt,
@@ -13,7 +15,7 @@ import {
 	Table,
 	UpdatedAt,
 } from "sequelize-typescript";
-import { Sequelize, TEXT } from "sequelize";
+import { Sequelize, TEXT, BIGINT, DataTypes } from "sequelize";
 
 @Table({ tableName: "budget_items" })
 export class BudgetItem extends Model {
@@ -71,4 +73,32 @@ export class BudgetItem extends Model {
 
 	@UpdatedAt
 	updated_at: Date;
+
+
+	@BeforeUpdate
+	static updateHistory(instance: BudgetItem, data: any) {
+		// if (instance.history === "") {
+		// 	console.log("yo");
+			
+		// }
+
+		// if (instance.dataValues.history !== "") {
+		// 	const dateTime = new Date();
+		// 	let history = JSON.parse(instance.dataValues.history)
+		// 	let newHistory = [(dateTime.toISOString().slice(0,10)), instance.dataValues.balance]
+		// 	// console.log(history);
+			
+		// 	// console.log(newHistory);
+			
+		// 	history.push(newHistory)
+			
+		// 	console.log(history);
+			
+		// } else {
+		// 	console.log("no");
+			
+		// }
+		// console.log(data.budgetItemId);
+		
+	}
 }

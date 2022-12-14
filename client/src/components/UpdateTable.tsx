@@ -7,53 +7,72 @@ import {
 	MenuItem,
 	Paper,
 	Box,
+	FormControl,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
-import { deleteBudgetItem } from "../services/internalApiService";
+import {
+	updateBudgetItem,
+	deleteBudgetItem,
+} from "../services/internalApiService";
 
 interface State {
-    budgetId: number,
-    budgetItem: Object
+	budgetItemId: number;
+	amount: number;
 }
 
 export const UpdateTable = (props: any) => {
+	const initialState = {
+		budgetItemId: -1,
+		amount: 0,
+	};
 
-    const initalState = {
-        budgetId: -1,
-        budgetItem: null
-    }
+	const [updatedItem, setUpdatedItem] = useState<State>(initialState);
 
-	const [id, setId] = useState(-1);
-	const [quantity, setQuantity] = useState("");
+	// useEffect(() => {
 
-    // useEffect(() => {
+	// })
 
-    // })
+	// const handleChange =
+	// 	(prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
+	// 		console.log();
 
+	// 		setUpdatedItem({ ...updatedItem, [prop]: event.target.value });
+	// 	};
 
+	const handleChange = (keyName: string, event: any) => {
+		setUpdatedItem({ ...updatedItem, [keyName]: event.target.value });
+	};
 
 	const handleUpdateItem = () => {
-		console.log("yo");
-        console.log(id);
-        
+		setUpdatedItem({
+			...updatedItem,
+			budgetItemId: updatedItem.budgetItemId,
+			amount: updatedItem.amount,
+		});
+		updateBudgetItem(updatedItem)
+			.then(() => {
+				props.reload();
+			})
+			.catch((error: any) => {
+				console.log(error);
+			});
 	};
 
 	const handleDeleteItem = () => {
-        console.log("wtf");
-        
-        deleteBudgetItem(id)
-            .then(() => {
-                props.reload()
-                console.log("item deleted successfuly");
-                
-            })
-            .catch((error: any) => {
-                console.log("yo");
-                
-            })
-    };
+		console.log(updatedItem.budgetItemId);
+
+		deleteBudgetItem(updatedItem.budgetItemId)
+			.then(() => {
+				props.reload();
+			})
+			.catch((error: any) => {
+				console.log(error);
+			});
+	};
+
+	// const handleChange
 
 	return (
 		<>
@@ -63,30 +82,40 @@ export const UpdateTable = (props: any) => {
 				</Typography>
 				<form>
 					<div>
-						<TextField
-							value={id}
-							onChange={(e) => setId(parseInt(e.target.value))}
-							select
-							label="Label"
+						<FormControl
+							variant="outlined"
+							sx={{ minWidth: 120 }}
 						>
-							{props.budgetItems.map((item: any, i: number) => {
-								return (
-									<MenuItem value={item.id} key={i}>
-										{item.name}
-									</MenuItem>
-								);
-							})}
-						</TextField>
+							<InputLabel id="item-label">Item</InputLabel>
+							<Select
+								variant="outlined"
+								onChange={(e) => handleChange("budgetItemId", e)}
+								labelId="item-label"
+								label={"Item"}
+							>
+								{props.budgetItems.map((item: any, i: number) => {
+									return (
+										<MenuItem value={item.id} key={i}>
+											{item.name}
+										</MenuItem>
+									);
+								})}
+							</Select>
+						</FormControl>
 					</div>
 					<br />
 					<div>
-						<TextField
-							id="outlined-basic"
-							label="Amount change"
-							type="number"
-							size="small"
-							variant="outlined"
-						/>
+						<FormControl sx={{ m: 1, minWidth: 120 }}>
+							<TextField
+								id="outlined-basic"
+								label="Amount change"
+								type="number"
+								size="small"
+								variant="outlined"
+								// onChange={handleChange("amount")
+								onChange={(e) => handleChange("amount", e)}
+							/>
+						</FormControl>
 					</div>
 					<br />
 					<Box

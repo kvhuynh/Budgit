@@ -47,21 +47,11 @@ export const ViewBudget = (props: any) => {
 	};
 
 	const [budgetDetails, setBudgetDetails] = useState<State>(initialState);
-	const { name } = useParams<string>();
-	const navigate = useNavigate();
-
+	const [open, setOpen] = useState(null)
 	const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-	const handlePopoverOpen = (event: any) => {
-		setAnchorEl(event.currentTarget);
-	};
-
-	const handlePopoverClose = () => {
-		setAnchorEl(null);
-	};
-
-	const open = Boolean(anchorEl);
-	const id = open ? "simple-popover" : undefined;
+	const { name } = useParams<string>();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		getOneBudget(name!)
@@ -87,6 +77,11 @@ export const ViewBudget = (props: any) => {
 		navigate(`/${location}`);
 	};
 
+	const handleClick = (event: any) => {
+		console.log(event);
+		
+	}
+
 	const handleDelete = (budgetId: number) => {
 		deleteBudget(budgetId)
 			.then(() => {
@@ -98,11 +93,19 @@ export const ViewBudget = (props: any) => {
 	};
 
 	const handleReloadOnCreate = () => {
-		console.log("did this get run");
-
 		getAllBudgetItemsByBudget(budgetDetails.id).then((budget: any) => {
 			setBudgetDetails({ ...budgetDetails, reload: !budgetDetails.reload });
 		});
+	};
+
+	const handlePopoverOpen = (event: any, id: any) => {
+		setAnchorEl(event.currentTarget);
+		setOpen(id)
+	};
+
+	const handlePopoverClose = () => {
+		setAnchorEl(null);
+		setOpen(null)
 	};
 
 	return (
@@ -149,18 +152,26 @@ export const ViewBudget = (props: any) => {
 								flexWrap: "wrap",
 							}}
 						>
-							{budgetDetails.budgetItems.map((budgetItem) => {
-								const { name } = budgetItem;
-								console.log(budgetDetails.totalBudgetValue);
+							{budgetDetails.budgetItems.map((budgetItem) => {					
+								const { id } = budgetItem;
+								let history;
+
+								try {
+									history = JSON.parse(budgetItem.history);
+								} catch (error: any) {
+									history = null;
+								}
+
 								return (
-									<div key={name}>
+									<div key={id}>
 										<Card
 											variant="outlined"
 											sx={{ width: 200 }}
 											aria-owns={open ? "mouse-over-popover" : undefined}
 											aria-haspopup="true"
-											onMouseEnter={handlePopoverOpen}
+											onMouseEnter={(event: any) => handlePopoverOpen(event, id)}
 											onMouseLeave={handlePopoverClose}
+											onClick={() => handleClick(id)}
 										>
 											{/* <CardActionArea component={Link} to ={`/budgets/${name}`}> */}
 											<CardActionArea>
@@ -179,11 +190,11 @@ export const ViewBudget = (props: any) => {
 											</CardActionArea>
 										</Card>
 										<Popover
-											id="mouse-over-popover"
+  											id={id}
 											sx={{
 												pointerEvents: "none",
 											}}
-											open={open}
+											open={open === id}
 											anchorEl={anchorEl}
 											anchorOrigin={{
 												vertical: "bottom",
@@ -196,7 +207,17 @@ export const ViewBudget = (props: any) => {
 											onClose={handlePopoverClose}
 											disableRestoreFocus
 										>
-											<Typography sx={{ p: 1 }}>{budgetItem.balance}</Typography>
+											{
+												history !== null ? 
+												history.map((dataEntry: any, index: number) => {
+													return(
+														<Typography sx={{ p: 1 }}>
+														{dataEntry}
+														</Typography>
+													)
+												}) : "no entry data available"
+											}
+											{/* <Typography sx={{ p: 1 }}></Typography> */}
 										</Popover>
 									</div>
 								);
@@ -207,6 +228,7 @@ export const ViewBudget = (props: any) => {
 				{/* <TransactionTable></TransactionTable> */}
 			</Grid>
 			<UpdateTable
+				defaultValue={"test"}
 				budgetItems={budgetDetails.budgetItems}
 				reload={() => handleReloadOnCreate()}
 			></UpdateTable>

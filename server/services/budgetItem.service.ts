@@ -41,7 +41,6 @@ const createBudgetItem = async (budgetId: string, data: any) => {
 		data["history"].push([(dateTime.toISOString().slice(0,10)), data["balance"]])
 		data["history"] = JSON.stringify(data["history"])
 	}
-	console.log(data);
 	
 	const budgetItem = await BudgetItem.create(data);
 
@@ -49,8 +48,34 @@ const createBudgetItem = async (budgetId: string, data: any) => {
 	return budgetItem;
 };
 
-const editBudgetItem = async (id: number, data: any) => {
+const updateBudgetItem = async (id: number, data: any) => {
 
+	const currentItem = await BudgetItem.findOne({ where:{ id: data.budgetItemId } })
+	
+	if (currentItem?.dataValues.history !== "") {
+		
+		const dateTime = new Date();
+		var newHistory = JSON.parse(currentItem?.dataValues.history)
+		let addingHistory = [(dateTime.toISOString().slice(0,10)), data.amount]
+
+		newHistory.push(addingHistory)
+		
+	} else {
+		console.log("no");
+		
+	}
+	
+	const updatedBudgetItem = await BudgetItem.increment({ balance: data.amount }, { where:{ id: data.budgetItemId } })
+		.then(() => {
+			// console.log(history);
+			
+			// BudgetItem.update({ history: '[["2022-12-13","1"]]' }, { where: { id: data.budgetItemId }, individualHooks: true })
+			BudgetItem.update({ history: JSON.stringify(newHistory) }, { where: { id: data.budgetItemId }, individualHooks: true })
+		})
+
+
+	return updatedBudgetItem;
+	// const budget = await Budget.update({ total_balance: data.newTotalBalance }, { where: { user_id: sessionId, name: budgetName } });
 };
 
 const deleteBudgetItem = async (budgetId: number) => {
@@ -62,6 +87,6 @@ module.exports = {
 	getAllBudgetItems,
 	getOneBudgetItem,
 	createBudgetItem,
-	editBudgetItem,
+	updateBudgetItem,
 	deleteBudgetItem,
 };

@@ -11,7 +11,6 @@ interface SessionToken {
 
 const getSessionId = (userToken: string) => {
     const id = jwtDecode<SessionToken> (userToken);
-    console.log("is this getting run rn");
 
     const sessionId = id.id;
     return sessionId

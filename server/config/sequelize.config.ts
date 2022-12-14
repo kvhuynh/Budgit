@@ -5,8 +5,6 @@ import { User } from "../models/user.model"
 import { Budget } from "../models/budget.model"
 import { BudgetItem } from "../models/budgetItem.model"
 
-
-
 const sequelize = new Sequelize(
     
     config.database, 

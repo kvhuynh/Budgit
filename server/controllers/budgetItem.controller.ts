@@ -2,7 +2,7 @@ const {
 	getAllBudgetItems,
 	getOneBudgetItem,
 	createBudgetItem,
-	editBudgetItem,
+	updateBudgetItem,
 	deleteBudgetItem,
 } = require("../services/budgetItem.service");
 
@@ -27,7 +27,6 @@ const handleGetOneBudgetItem = async (req: any, res: any) => {
 
 const handleCreateBudgetItem = async (req: any, res: any) => {
 	try {
-		console.log(req.body);
 
 		const budgetItem = await createBudgetItem(req.params.budgetId, req.body);
 		return res.json(budgetItem);
@@ -38,13 +37,18 @@ const handleCreateBudgetItem = async (req: any, res: any) => {
 
 const handleUpdateBudgetItem = async (req: any, res: any) => {
 	try {
-	} catch (error: any) {}
+		const budgetItem = await updateBudgetItem(req.params.id, req.body);
+
+		return res.json(budgetItem);
+		
+	} catch (error: any) {
+		return res.status(400).json(error);
+	}
 };
 
 const handleDeleteBudgetItem = async (req: any, res: any) => {
 	try {
 		const budgetItem = await deleteBudgetItem(req.params.budgetId);
-		console.log(budgetItem);
 		
 		return res.json(budgetItem);
 	} catch (error: any) {

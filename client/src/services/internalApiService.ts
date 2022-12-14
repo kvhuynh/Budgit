@@ -79,7 +79,13 @@ export const getAllBudgetItemsByBudget = async (budget: any) => {
 	return res.data;
 };
 
-export const updateBudgetItem = async (budgetItem: any) => {};
+export const updateBudgetItem = async (budgetItemData: any) => {
+	console.log(budgetItemData);
+	const res = await http.put(`/budgetItems/${budgetItemData.id}/update`, budgetItemData);
+
+	return res.data;
+
+};
 
 export const deleteBudgetItem = async (budgetItemId: number) => {
 
