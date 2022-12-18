@@ -29,17 +29,22 @@ export const UpdateTable = (props: any) => {
 	};
 
 	const [updatedItem, setUpdatedItem] = useState<State>(initialState);
+	const [focusedItem, setFocusedItem] = useState<string>("");
 
-	// useEffect(() => {
 
-	// })
 
-	// const handleChange =
-	// 	(prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-	// 		console.log();
+	useEffect(() => {
+		try {
+			console.log("udpate table is rerendering");
+			
+			setFocusedItem(props.budgetItems[props.defaultValue].name)
 
-	// 		setUpdatedItem({ ...updatedItem, [prop]: event.target.value });
-	// 	};
+		} catch (error: any) {
+			console.log(error);
+			
+		}
+	}, [props])
+
 
 	const handleChange = (keyName: string, event: any) => {
 		setUpdatedItem({ ...updatedItem, [keyName]: event.target.value });
@@ -92,14 +97,30 @@ export const UpdateTable = (props: any) => {
 								onChange={(e) => handleChange("budgetItemId", e)}
 								labelId="item-label"
 								label={"Item"}
+								displayEmpty
 							>
+								{/* <MenuItem autoFocus={true} >sadfasd</MenuItem> */}
 								{props.budgetItems.map((item: any, i: number) => {
+									// let menuItem;
+									// console.log("defautl value is " + props.defaultValue)
+									
+									// if (props.defaultValue === item.id) {
+									// 	console.log("i should be clicked")
+									// 	menuItem = <MenuItem value={item.id} key={i} autoFocus>{item.name}</MenuItem>
+									// } else {
+									// 	console.log("not clicked")
+									// 	menuItem = <MenuItem value={item.id} key={i}>{item.name}</MenuItem>
+									// }
+
+									// console.log(menuItem)
 									return (
+										// <div>{menuItem}</div>
 										<MenuItem value={item.id} key={i}>
 											{item.name}
 										</MenuItem>
 									);
 								})}
+								
 							</Select>
 						</FormControl>
 					</div>

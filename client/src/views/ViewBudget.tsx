@@ -9,6 +9,8 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Popover from "@mui/material/Popover";
 
+import ReactECharts from "echarts-for-react"
+
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 
@@ -47,6 +49,9 @@ export const ViewBudget = (props: any) => {
 	};
 
 	const [budgetDetails, setBudgetDetails] = useState<State>(initialState);
+
+	const [budgetItemIndex, setBudgetItemIndex] = useState(0);
+
 	const [open, setOpen] = useState(null)
 	const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -66,6 +71,7 @@ export const ViewBudget = (props: any) => {
 						sumOfBudgetItems: budgetItems.sum,
 						budgetItems: budgetItems.budgetItems,
 					});
+					
 				});
 			})
 			.catch((error: any) => {
@@ -77,8 +83,11 @@ export const ViewBudget = (props: any) => {
 		navigate(`/${location}`);
 	};
 
-	const handleClick = (event: any) => {
-		console.log(event);
+	const handleClick = (index: number) => {
+		setBudgetItemIndex(index)
+		setBudgetDetails({ ...budgetDetails, reload: !budgetDetails.reload });
+		console.log(budgetItemIndex);
+		
 		
 	}
 
@@ -108,6 +117,52 @@ export const ViewBudget = (props: any) => {
 		setOpen(null)
 	};
 
+	// const options = {
+	// 	title: {
+	// 	  text: `$${budgetDetails.totalBudgetValue}`,
+	// 	  left: 'center',
+	// 	  top: 'center'
+	// 	},
+	// 	series: [
+	// 	  {
+	// 		type: 'pie',
+	// 		data: [
+	// 		  {
+	// 			// value: 335,
+	// 			name: 'A',
+	// 			balance: -1
+	// 		  },
+	// 		  {
+	// 			// value: 234,
+	// 			name: 'B'
+	// 		  },
+	// 		  {
+	// 			// value: 1548,
+	// 			name: 'C'
+	// 		  }
+	// 		],
+	// 		radius: ['40%', '70%']
+	// 	  }
+	// 	]
+	//   };
+
+	const options = {
+
+		title: {
+		  text: `$${budgetDetails.totalBudgetValue}`,
+		  left: 'center',
+		  top: 'center'
+		},
+
+		series: [
+		  {
+			type: 'pie',
+			data: budgetDetails.budgetItems,
+			radius: ['40%', '70%']
+		  }
+		]
+	  };
+
 	return (
 		<>
 			<Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -127,6 +182,8 @@ export const ViewBudget = (props: any) => {
 				Amount allocated: ${budgetDetails.sumOfBudgetItems}
 			</Typography>
 			<Typography variant="h5">Select an item to edit</Typography>
+
+			<ReactECharts option={options} />
 
 			<Grid container>
 				<Grid xs={6}>
@@ -152,7 +209,7 @@ export const ViewBudget = (props: any) => {
 								flexWrap: "wrap",
 							}}
 						>
-							{budgetDetails.budgetItems.map((budgetItem) => {					
+							{budgetDetails.budgetItems.map((budgetItem, index) => {					
 								const { id } = budgetItem;
 								let history;
 
@@ -161,7 +218,8 @@ export const ViewBudget = (props: any) => {
 								} catch (error: any) {
 									history = null;
 								}
-
+								console.log(budgetDetails.budgetItems)
+								
 								return (
 									<div key={id}>
 										<Card
@@ -171,10 +229,10 @@ export const ViewBudget = (props: any) => {
 											aria-haspopup="true"
 											onMouseEnter={(event: any) => handlePopoverOpen(event, id)}
 											onMouseLeave={handlePopoverClose}
-											onClick={() => handleClick(id)}
+											onClick={() => handleClick(budgetItem.id)}
 										>
 											{/* <CardActionArea component={Link} to ={`/budgets/${name}`}> */}
-											<CardActionArea>
+											<CardActionArea component={Link} to={`/budgets/${budgetDetails.name}/${budgetItem.name}`}>
 												<CardContent>
 													<Typography
 														sx={{ fontSize: 25 }}
@@ -228,10 +286,11 @@ export const ViewBudget = (props: any) => {
 				{/* <TransactionTable></TransactionTable> */}
 			</Grid>
 			<UpdateTable
-				defaultValue={"test"}
+				defaultValue={budgetItemIndex}
 				budgetItems={budgetDetails.budgetItems}
 				reload={() => handleReloadOnCreate()}
 			></UpdateTable>
+			
 		</>
 	);
 };
