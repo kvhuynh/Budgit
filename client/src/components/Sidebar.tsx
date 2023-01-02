@@ -26,6 +26,7 @@ import { LoginRegister } from "../views/LoginRegister";
 
 import ViewBudget from "../views/ViewBudget";
 import Dashboard from "../views/Dashboard";
+import ViewBudgetItem from "../views/ViewBudgetItem";
 
 import { useState, useEffect } from "react";
 
@@ -246,6 +247,7 @@ export function Sidebar() {
 					<Route path="/" element={<LoginRegister />} />
 					<Route path="/dashboard" element={<Dashboard />} />
 					<Route path="/budgets/:name" element={<ViewBudget />}></Route>
+					<Route path="/budgets/:name/:budgetItemId" element={<ViewBudgetItem />}></Route>
 				</Routes>
 			</Box>
 		</Box>

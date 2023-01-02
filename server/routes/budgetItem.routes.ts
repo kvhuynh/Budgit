@@ -19,7 +19,7 @@ router.put("/:id/update", authenticate, handleUpdateBudgetItem)
 
 router.get("/:budgetId", handleGetAllBudgetItems);
 
-router.get("/:id", authenticate, handleGetOneBudgetItem)
+router.get("/:id/single", authenticate, handleGetOneBudgetItem)
 
 router.delete("/:budgetId/delete", authenticate, handleDeleteBudgetItem);
 

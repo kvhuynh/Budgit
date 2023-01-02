@@ -35,7 +35,7 @@ export class BudgetItem extends Model {
 	name: string;
 
 	@Column({
-		field: "balance",
+		field: "value",
 		defaultValue: 0.0,
 		// validate: {
 		//   notEmpty: {
@@ -43,7 +43,7 @@ export class BudgetItem extends Model {
 		//   }
 		// }
 	})
-	balance: number;
+	value: number;
 
 	@Column({
 		field: "description",

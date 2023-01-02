@@ -18,15 +18,16 @@ const getAllBudgetItems = async (userId: string, budgetId: number) => {
 	
 	
 	for (let i = 0; i < budgetItems.length; i++) {
-		sum += budgetItems[i].dataValues.balance;
+		sum += budgetItems[i].dataValues.value;
 	}
 
 	return {budgetItems: budgetItems, sum: sum};
 };
 
-const getOneBudgetItem = async (budgetId: string) => {
+const getOneBudgetItem = async (userId: string, budgetItemId: string) => {
+	
 	const budgetItem = await BudgetItem.findOne({
-		where: { budget_id: budgetId },
+		where: { id: budgetItemId },
 	});
 	return budgetItem;
 };
@@ -34,11 +35,11 @@ const getOneBudgetItem = async (budgetId: string) => {
 const createBudgetItem = async (budgetId: string, data: any) => {
 	const dateTime = new Date();
 	data["budgetId"] = budgetId;
-	data["balance"] = data["totalBalance"] 
+	data["value"] = data["totalBalance"] 
 
-	if (data["balance"] !== 0) {
+	if (data["value"] !== 0) {
 		data["history"] = []
-		data["history"].push([(dateTime.toISOString().slice(0,10)), data["balance"]])
+		data["history"].push([(dateTime.toISOString().slice(0,10)), data["value"]])
 		data["history"] = JSON.stringify(data["history"])
 	}
 	
@@ -52,6 +53,19 @@ const updateBudgetItem = async (id: number, data: any) => {
 
 	const currentItem = await BudgetItem.findOne({ where:{ id: data.budgetItemId } })
 	
+
+	if (data.amount === 0) {
+		console.log("user entered 0");
+		
+		// return {invalidAmountError: "please enter a non 0 amount"}
+		// throw new Error({invalidAmountError: "please enter a non 0 value"})
+		// throw new Error("Please enter a non 0 value")
+		throw {
+			invalidAmounterror: "Please enter a non 0 value"
+		}
+	}	
+
+	// if a budget item was created but no initial value was given
 	if (currentItem?.dataValues.history !== "") {
 		
 		const dateTime = new Date();
@@ -65,7 +79,7 @@ const updateBudgetItem = async (id: number, data: any) => {
 		
 	}
 	
-	const updatedBudgetItem = await BudgetItem.increment({ balance: data.amount }, { where:{ id: data.budgetItemId } })
+	const updatedBudgetItem = await BudgetItem.increment({ value: data.amount }, { where:{ id: data.budgetItemId } })
 		.then(() => {
 			// console.log(history);
 			

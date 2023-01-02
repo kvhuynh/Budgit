@@ -15,7 +15,7 @@ const sequelize = new Sequelize(
         define: {
             timestamps: false
         },
-        // logging: false // comment if you want to see sql queries
+        logging: false // comment if you want to see sql queries
     },
     
 

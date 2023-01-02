@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Popover from "@mui/material/Popover";
 
-import ReactECharts from "echarts-for-react"
+import ReactECharts from "echarts-for-react";
 
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
@@ -52,7 +52,7 @@ export const ViewBudget = (props: any) => {
 
 	const [budgetItemIndex, setBudgetItemIndex] = useState(0);
 
-	const [open, setOpen] = useState(null)
+	const [open, setOpen] = useState(null);
 	const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
 	const { name } = useParams<string>();
@@ -71,7 +71,6 @@ export const ViewBudget = (props: any) => {
 						sumOfBudgetItems: budgetItems.sum,
 						budgetItems: budgetItems.budgetItems,
 					});
-					
 				});
 			})
 			.catch((error: any) => {
@@ -84,12 +83,10 @@ export const ViewBudget = (props: any) => {
 	};
 
 	const handleClick = (index: number) => {
-		setBudgetItemIndex(index)
+		setBudgetItemIndex(index);
 		setBudgetDetails({ ...budgetDetails, reload: !budgetDetails.reload });
 		console.log(budgetItemIndex);
-		
-		
-	}
+	};
 
 	const handleDelete = (budgetId: number) => {
 		deleteBudget(budgetId)
@@ -109,59 +106,50 @@ export const ViewBudget = (props: any) => {
 
 	const handlePopoverOpen = (event: any, id: any) => {
 		setAnchorEl(event.currentTarget);
-		setOpen(id)
+		setOpen(id);
 	};
 
 	const handlePopoverClose = () => {
 		setAnchorEl(null);
-		setOpen(null)
+		setOpen(null);
 	};
 
-	// const options = {
-	// 	title: {
-	// 	  text: `$${budgetDetails.totalBudgetValue}`,
-	// 	  left: 'center',
-	// 	  top: 'center'
-	// 	},
-	// 	series: [
-	// 	  {
-	// 		type: 'pie',
-	// 		data: [
-	// 		  {
-	// 			// value: 335,
-	// 			name: 'A',
-	// 			balance: -1
-	// 		  },
-	// 		  {
-	// 			// value: 234,
-	// 			name: 'B'
-	// 		  },
-	// 		  {
-	// 			// value: 1548,
-	// 			name: 'C'
-	// 		  }
-	// 		],
-	// 		radius: ['40%', '70%']
-	// 	  }
-	// 	]
-	//   };
-
 	const options = {
-
 		title: {
-		  text: `$${budgetDetails.totalBudgetValue}`,
-		  left: 'center',
-		  top: 'center'
+			// text: `$${budgetDetails.totalBudgetValue}`,
+			text: `$${budgetDetails.sumOfBudgetItems}`,
+			left: "center",
+			top: "center",
+		},
+		tooltip: {
+			trigger: "item",
+			formatter: "{b} : ${c} ({d}%)",
 		},
 
 		series: [
-		  {
-			type: 'pie',
-			data: budgetDetails.budgetItems,
-			radius: ['40%', '70%']
-		  }
-		]
-	  };
+			{
+				type: "pie",
+				data: budgetDetails.budgetItems,
+				radius: ["40%", "70%"],
+				// 	itemStyle : {
+				//         normal : {
+				//              label : {
+				//                 show: true, position: 'outer',
+				//                 formatter : function (params: any){
+				// 					console.log(params.data.name);
+									
+				//                       return  params.value + '%\n'
+				//                 },
+				//             },
+							
+				//             labelLine : {
+				//                 show : true
+				//             }
+				//         },
+				//   }
+			},
+		],
+	};
 
 	return (
 		<>
@@ -209,7 +197,7 @@ export const ViewBudget = (props: any) => {
 								flexWrap: "wrap",
 							}}
 						>
-							{budgetDetails.budgetItems.map((budgetItem, index) => {					
+							{budgetDetails.budgetItems.map((budgetItem, index) => {
 								const { id } = budgetItem;
 								let history;
 
@@ -218,8 +206,7 @@ export const ViewBudget = (props: any) => {
 								} catch (error: any) {
 									history = null;
 								}
-								console.log(budgetDetails.budgetItems)
-								
+
 								return (
 									<div key={id}>
 										<Card
@@ -227,28 +214,36 @@ export const ViewBudget = (props: any) => {
 											sx={{ width: 200 }}
 											aria-owns={open ? "mouse-over-popover" : undefined}
 											aria-haspopup="true"
-											onMouseEnter={(event: any) => handlePopoverOpen(event, id)}
+											onMouseEnter={(event: any) =>
+												handlePopoverOpen(event, id)
+											}
 											onMouseLeave={handlePopoverClose}
 											onClick={() => handleClick(budgetItem.id)}
 										>
 											{/* <CardActionArea component={Link} to ={`/budgets/${name}`}> */}
-											<CardActionArea component={Link} to={`/budgets/${budgetDetails.name}/${budgetItem.name}`}>
-												<CardContent>
-													<Typography
-														sx={{ fontSize: 25 }}
-														color="text.secondary"
-														gutterBottom
-													>
-														{budgetItem.name}
-													</Typography>
-													<Typography variant="body2">
-														Current Balance: ${budgetItem.balance}
-													</Typography>
-												</CardContent>
+											{/* <CardActionArea
+												component={Link}
+												to={`/budgets/${budgetDetails.name}/${budgetItem.name}`}
+											> */}
+											<CardActionArea>
+												<Link to={`/budgets/${budgetDetails.name}/${budgetItem.id}`} state={{budgetItem: budgetItem}} style={{ textDecoration: "none" }} >
+													<CardContent>
+														<Typography
+															sx={{ fontSize: 25 }}
+															color="text.secondary"
+															gutterBottom
+														>
+															{budgetItem.name}
+														</Typography>
+														<Typography variant="body2">
+															Current Balance: ${budgetItem.value}
+														</Typography>
+													</CardContent>
+												</Link>
 											</CardActionArea>
 										</Card>
 										<Popover
-  											id={id}
+											id={id}
 											sx={{
 												pointerEvents: "none",
 											}}
@@ -265,16 +260,13 @@ export const ViewBudget = (props: any) => {
 											onClose={handlePopoverClose}
 											disableRestoreFocus
 										>
-											{
-												history !== null ? 
-												history.map((dataEntry: any, index: number) => {
-													return(
-														<Typography sx={{ p: 1 }}>
-														{dataEntry}
-														</Typography>
-													)
-												}) : "no entry data available"
-											}
+											{history !== null
+												? history.map((dataEntry: any, index: number) => {
+														return (
+															<Typography sx={{ p: 1 }}>{dataEntry}</Typography>
+														);
+												  })
+												: "no entry data available"}
 											{/* <Typography sx={{ p: 1 }}></Typography> */}
 										</Popover>
 									</div>
@@ -290,7 +282,6 @@ export const ViewBudget = (props: any) => {
 				budgetItems={budgetDetails.budgetItems}
 				reload={() => handleReloadOnCreate()}
 			></UpdateTable>
-			
 		</>
 	);
 };

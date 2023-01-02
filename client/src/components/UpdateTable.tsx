@@ -47,7 +47,8 @@ export const UpdateTable = (props: any) => {
 
 
 	const handleChange = (keyName: string, event: any) => {
-		setUpdatedItem({ ...updatedItem, [keyName]: event.target.value });
+
+		setUpdatedItem({ ...updatedItem, [keyName]: parseInt(event.target.value) });		
 	};
 
 	const handleUpdateItem = () => {
@@ -61,7 +62,9 @@ export const UpdateTable = (props: any) => {
 				props.reload();
 			})
 			.catch((error: any) => {
+				// console.log(error.response.data);
 				console.log(error);
+				
 			});
 	};
 
@@ -73,7 +76,7 @@ export const UpdateTable = (props: any) => {
 				props.reload();
 			})
 			.catch((error: any) => {
-				console.log(error);
+				console.log(error.response.data);
 			});
 	};
 
