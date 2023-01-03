@@ -16,6 +16,7 @@ const handleGetAllBudgetItems = async (req: any, res: any) => {
 		);
 		return res.json(budgetItems);
 	} catch (error: any) {
+		
 		return res.status(400).json(error);
 	}
 };
@@ -33,7 +34,7 @@ const handleGetOneBudgetItem = async (req: any, res: any) => {
 
 const handleCreateBudgetItem = async (req: any, res: any) => {
 	try {
-
+	
 		const budgetItem = await createBudgetItem(req.params.budgetId, req.body);
 		return res.json(budgetItem);
 	} catch (error: any) {

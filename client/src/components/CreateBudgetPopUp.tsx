@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import { createBudget, createBudgetItem } from "../services/internalApiService";
 
 interface State {
+	type: string;
 	name: string;
 	description: string;
 	totalBalance: number;
@@ -18,15 +19,18 @@ interface State {
 	validationError: string;
 }
 
-const initialState = {
-	name: "",
-	description: "",
-	totalBalance: 0,
-	history: "",
-	validationError: "",
-};
 
 export const CreateBudgetPopUp = (props: any) => {
+
+	const initialState = {
+		type: props.text,
+		name: "",
+		description: "",
+		totalBalance: 0,
+		history: "",
+		validationError: "",
+	};
+	
 	const [open, setOpen] = useState(false);
 	// const [reload, setReload] = useState(props)
 
@@ -87,7 +91,7 @@ export const CreateBudgetPopUp = (props: any) => {
 
 			<Dialog open={open} onClose={handleClose}>
 				<DialogTitle>
-					Create a{props.text === "income source" ? "n" : ""} {props.text}
+					Create an {props.text}
 				</DialogTitle>
 				<DialogContent>
 					<DialogContentText>

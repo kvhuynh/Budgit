@@ -33,8 +33,10 @@ interface State {
 	description: string;
 	totalBudgetValue: number;
 	sumOfBudgetItems: number;
+	sumOfIncomeItems: number;
 	reload: boolean;
 	budgetItems: Array<any>;
+	incomeItems: Array<any>;
 }
 
 export const ViewBudget = (props: any) => {
@@ -44,8 +46,11 @@ export const ViewBudget = (props: any) => {
 		description: "",
 		totalBudgetValue: 0,
 		sumOfBudgetItems: 0,
+		sumOfIncomeItems: 0,
 		reload: false,
 		budgetItems: [],
+		incomeItems: []
+
 	};
 
 	const [budgetDetails, setBudgetDetails] = useState<State>(initialState);
@@ -68,12 +73,26 @@ export const ViewBudget = (props: any) => {
 						name: currentBudget.name,
 						description: currentBudget.description,
 						totalBudgetValue: currentBudget.totalBalance,
-						sumOfBudgetItems: budgetItems.sum,
+						sumOfBudgetItems: budgetItems.expenseSum,
+						sumOfIncomeItems: budgetItems.incomeSum,
 						budgetItems: budgetItems.budgetItems,
+						incomeItems: budgetItems.incomeItems
 					});
+				})
+				.catch((error: any) => {
+					setBudgetDetails({
+						...budgetDetails,
+						id: currentBudget.id,
+						name: currentBudget.name,
+						description: currentBudget.description,
+						totalBudgetValue: currentBudget.totalBalance,
+					})
+					
 				});
+				
 			})
 			.catch((error: any) => {
+				
 				console.log(error);
 			});
 	}, [budgetDetails.reload]);
@@ -114,10 +133,30 @@ export const ViewBudget = (props: any) => {
 		setOpen(null);
 	};
 
-	const options = {
+	const incomeOptions = {
 		title: {
-			// text: `$${budgetDetails.totalBudgetValue}`,
-			text: `$${budgetDetails.sumOfBudgetItems}`,
+			text: 
+			`Income: \n$${budgetDetails.sumOfIncomeItems}`,
+			left: "center",
+			top: "center",
+		},
+		tooltip: {
+			trigger: "item",
+			formatter: "{b} : ${c} ({d}%)",
+		},
+
+		series: [
+			{
+				type: "pie",
+				data: budgetDetails.incomeItems,
+				radius: ["40%", "70%"],
+			},
+		],
+	};
+
+	const expenseOptions = {
+		title: {
+			text: `Expenses: \n$${budgetDetails.sumOfBudgetItems}`,
 			left: "center",
 			top: "center",
 		},
@@ -131,22 +170,6 @@ export const ViewBudget = (props: any) => {
 				type: "pie",
 				data: budgetDetails.budgetItems,
 				radius: ["40%", "70%"],
-				// 	itemStyle : {
-				//         normal : {
-				//              label : {
-				//                 show: true, position: 'outer',
-				//                 formatter : function (params: any){
-				// 					console.log(params.data.name);
-									
-				//                       return  params.value + '%\n'
-				//                 },
-				//             },
-							
-				//             labelLine : {
-				//                 show : true
-				//             }
-				//         },
-				//   }
 			},
 		],
 	};
@@ -161,17 +184,28 @@ export const ViewBudget = (props: any) => {
 
 			<Typography variant="h2">
 				{budgetDetails.name}
+				<br />
 				{budgetDetails.description}
 				<DeleteIcon onClick={() => handleDelete(budgetDetails.id)}></DeleteIcon>
 			</Typography>
 			<Typography variant="h4">
-				Remaining Balance: $
+				Ready to Assign: $
 				{budgetDetails.totalBudgetValue - budgetDetails.sumOfBudgetItems} /
 				Amount allocated: ${budgetDetails.sumOfBudgetItems}
 			</Typography>
 			<Typography variant="h5">Select an item to edit</Typography>
 
-			<ReactECharts option={options} />
+
+			<Grid container>
+				<Grid xs={6}>
+					<ReactECharts option={incomeOptions} />
+				</Grid>
+				<Grid xs={6}>
+					<ReactECharts option={expenseOptions} />
+				</Grid>
+			</Grid>
+
+
 
 			<Grid container>
 				<Grid xs={6}>
@@ -181,13 +215,95 @@ export const ViewBudget = (props: any) => {
 						budgetId={budgetDetails.id}
 						text={"income source"}
 					></CreateBudgetPopUp>
+										<div>
+						<Box
+							sx={{
+								display: "flex",
+								justifyContent: "space-around",
+								flexWrap: "wrap",
+							}}
+						>
+							{budgetDetails.incomeItems.map((budgetItem, index) => {
+								const { id } = budgetItem;
+								const { type } = budgetItem;
+								let history;
+								
+								try {
+									history = JSON.parse(budgetItem.history);
+								} catch (error: any) {
+									history = null;
+								}
+								if (type === "income source") {
+									return (
+										<div key={id}>
+											<Card
+												variant="outlined"
+												sx={{ width: 200 }}
+												aria-owns={open ? "mouse-over-popover" : undefined}
+												aria-haspopup="true"
+												onMouseEnter={(event: any) =>
+													handlePopoverOpen(event, id)
+												}
+												onMouseLeave={handlePopoverClose}
+												onClick={() => handleClick(budgetItem.id)}
+											>
+												<CardActionArea>
+													<Link to={`/budgets/${budgetDetails.name}/${budgetItem.id}`} state={{budgetItem: budgetItem}} style={{ textDecoration: "none" }} >
+														<CardContent>
+															<Typography
+																sx={{ fontSize: 25 }}
+																color="text.secondary"
+																gutterBottom
+															>
+																{budgetItem.name}
+															</Typography>
+															<Typography variant="body2">
+																Current Balance: ${budgetItem.value}
+															</Typography>
+														</CardContent>
+													</Link>
+												</CardActionArea>
+											</Card>
+											<Popover
+												id={id}
+												sx={{
+													pointerEvents: "none",
+												}}
+												open={open === id}
+												anchorEl={anchorEl}
+												anchorOrigin={{
+													vertical: "bottom",
+													horizontal: "left",
+												}}
+												transformOrigin={{
+													vertical: "top",
+													horizontal: "left",
+												}}
+												onClose={handlePopoverClose}
+												disableRestoreFocus
+											>
+												{history !== null
+													? history.map((dataEntry: any, index: number) => {
+															return (
+																<Typography sx={{ p: 1 }}>{dataEntry}</Typography>
+															);
+													  })
+													: "no entry data available"}
+												{/* <Typography sx={{ p: 1 }}></Typography> */}
+											</Popover>
+										</div>
+									);
+								}
+							})}
+						</Box>
+					</div>
 				</Grid>
 				<Grid item xs={6}>
 					<CreateBudgetPopUp
 						reload={() => handleReloadOnCreate()}
 						createBudgetItem={true}
 						budgetId={budgetDetails.id}
-						text={"budget item"}
+						text={"expense"}
 					></CreateBudgetPopUp>
 					<div>
 						<Box
@@ -199,6 +315,7 @@ export const ViewBudget = (props: any) => {
 						>
 							{budgetDetails.budgetItems.map((budgetItem, index) => {
 								const { id } = budgetItem;
+								const { type } = budgetItem;
 								let history;
 
 								try {
@@ -206,71 +323,72 @@ export const ViewBudget = (props: any) => {
 								} catch (error: any) {
 									history = null;
 								}
-
-								return (
-									<div key={id}>
-										<Card
-											variant="outlined"
-											sx={{ width: 200 }}
-											aria-owns={open ? "mouse-over-popover" : undefined}
-											aria-haspopup="true"
-											onMouseEnter={(event: any) =>
-												handlePopoverOpen(event, id)
-											}
-											onMouseLeave={handlePopoverClose}
-											onClick={() => handleClick(budgetItem.id)}
-										>
-											{/* <CardActionArea component={Link} to ={`/budgets/${name}`}> */}
-											{/* <CardActionArea
-												component={Link}
-												to={`/budgets/${budgetDetails.name}/${budgetItem.name}`}
-											> */}
-											<CardActionArea>
-												<Link to={`/budgets/${budgetDetails.name}/${budgetItem.id}`} state={{budgetItem: budgetItem}} style={{ textDecoration: "none" }} >
-													<CardContent>
-														<Typography
-															sx={{ fontSize: 25 }}
-															color="text.secondary"
-															gutterBottom
-														>
-															{budgetItem.name}
-														</Typography>
-														<Typography variant="body2">
-															Current Balance: ${budgetItem.value}
-														</Typography>
-													</CardContent>
-												</Link>
-											</CardActionArea>
-										</Card>
-										<Popover
-											id={id}
-											sx={{
-												pointerEvents: "none",
-											}}
-											open={open === id}
-											anchorEl={anchorEl}
-											anchorOrigin={{
-												vertical: "bottom",
-												horizontal: "left",
-											}}
-											transformOrigin={{
-												vertical: "top",
-												horizontal: "left",
-											}}
-											onClose={handlePopoverClose}
-											disableRestoreFocus
-										>
-											{history !== null
-												? history.map((dataEntry: any, index: number) => {
-														return (
-															<Typography sx={{ p: 1 }}>{dataEntry}</Typography>
-														);
-												  })
-												: "no entry data available"}
-											{/* <Typography sx={{ p: 1 }}></Typography> */}
-										</Popover>
-									</div>
-								);
+								if (type === "budget item") {
+									return (
+										<div key={id}>
+											<Card
+												variant="outlined"
+												sx={{ width: 200 }}
+												aria-owns={open ? "mouse-over-popover" : undefined}
+												aria-haspopup="true"
+												onMouseEnter={(event: any) =>
+													handlePopoverOpen(event, id)
+												}
+												onMouseLeave={handlePopoverClose}
+												onClick={() => handleClick(budgetItem.id)}
+											>
+												{/* <CardActionArea component={Link} to ={`/budgets/${name}`}> */}
+												{/* <CardActionArea
+													component={Link}
+													to={`/budgets/${budgetDetails.name}/${budgetItem.name}`}
+												> */}
+												<CardActionArea>
+													<Link to={`/budgets/${budgetDetails.name}/${budgetItem.id}`} state={{budgetItem: budgetItem}} style={{ textDecoration: "none" }} >
+														<CardContent>
+															<Typography
+																sx={{ fontSize: 25 }}
+																color="text.secondary"
+																gutterBottom
+															>
+																{budgetItem.name}
+															</Typography>
+															<Typography variant="body2">
+																Current Balance: ${budgetItem.value}
+															</Typography>
+														</CardContent>
+													</Link>
+												</CardActionArea>
+											</Card>
+											<Popover
+												id={id}
+												sx={{
+													pointerEvents: "none",
+												}}
+												open={open === id}
+												anchorEl={anchorEl}
+												anchorOrigin={{
+													vertical: "bottom",
+													horizontal: "left",
+												}}
+												transformOrigin={{
+													vertical: "top",
+													horizontal: "left",
+												}}
+												onClose={handlePopoverClose}
+												disableRestoreFocus
+											>
+												{history !== null
+													? history.map((dataEntry: any, index: number) => {
+															return (
+																<Typography sx={{ p: 1 }}>{dataEntry}</Typography>
+															);
+													  })
+													: "no entry data available"}
+												{/* <Typography sx={{ p: 1 }}></Typography> */}
+											</Popover>
+										</div>
+									);
+								}
 							})}
 						</Box>
 					</div>
@@ -279,7 +397,7 @@ export const ViewBudget = (props: any) => {
 			</Grid>
 			<UpdateTable
 				defaultValue={budgetItemIndex}
-				budgetItems={budgetDetails.budgetItems}
+				budgetItems={budgetDetails.budgetItems.concat(budgetDetails.incomeItems)}
 				reload={() => handleReloadOnCreate()}
 			></UpdateTable>
 		</>

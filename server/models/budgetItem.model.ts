@@ -25,6 +25,11 @@ export class BudgetItem extends Model {
 	id: number;
 
 	@Column({
+		field: "type"
+	})
+	type: string;
+
+	@Column({
 		field: "name",
 		validate: {
 			notEmpty: {

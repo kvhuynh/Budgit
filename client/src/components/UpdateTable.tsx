@@ -35,7 +35,6 @@ export const UpdateTable = (props: any) => {
 
 	useEffect(() => {
 		try {
-			console.log("udpate table is rerendering");
 			
 			setFocusedItem(props.budgetItems[props.defaultValue].name)
 
@@ -81,7 +80,7 @@ export const UpdateTable = (props: any) => {
 	};
 
 	// const handleChange
-
+	// TODO: add date edit? and date entry
 	return (
 		<>
 			<Paper sx={{ padding: 1, paddingLeft: 3, paddingRight: 3 }}>
