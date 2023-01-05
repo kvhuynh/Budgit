@@ -113,3 +113,13 @@ export const deleteBudgetItem = async (budgetItemId: number) => {
     
 	return res.data;
 };
+
+
+export const getAllIncomeSources = async () => {
+	console.log("lets see if we get here today");
+	
+	const res = await http.get("/incomeSources/")
+
+	return res.data
+
+}
