@@ -42,7 +42,26 @@ export const Dashboard = () => {
 	const [values, setValues] = useState<State>(initialState);
 	const navigate = useNavigate();
 	const [linkToken, setLinkToken] = useState(null);
-	const [incomeSources, setIncomeSources] = useState([]);
+	// const [incomeSources, setIncomeSources] = useState([]);
+	const [incomeSources, setIncomeSources] = useState<any>([]);
+
+
+	const { open, ready } = usePlaidLink({
+		token: linkToken,
+		onSuccess: (publicToken, metadata) => {
+			exchangeTokens(publicToken)
+				.then((item: any) => {		
+					console.log(item);
+					// setIncomeSources({incomeSources: [...incomeSources, item]})
+					setIncomeSources([...incomeSources, item])
+					// handleReloadOnCreate()
+				})
+				.catch((error: any) => {
+					console.log(error);
+					
+				})
+		},
+	});
 
 	useEffect(() => {
 		getCurrentUser()
@@ -61,14 +80,22 @@ export const Dashboard = () => {
 					});
 				createLinkToken()
 					.then((token: any) => {
+						
 						setLinkToken(token.link_token);
 					})
 					.catch((error: any) => {
 						console.log(error);
 					});
+
 				getAllIncomeSources()
 					.then((incomeSources: any) => {
+						console.log(incomeSources);
+						console.log(values);
+						
 						setIncomeSources(incomeSources)
+						// setIncomeSources({...incomeSources, incomeSources})
+
+
 					})
 					.catch((error: any) => {
 						console.log(error);
@@ -82,15 +109,23 @@ export const Dashboard = () => {
 
 	const handleReloadOnCreate = () => {
 		setValues({ ...values, reload: !values.reload });
+		console.log("i got called");
+		
 	};
 
-	const { open, ready } = usePlaidLink({
-		token: linkToken,
-		onSuccess: (publicToken, metadata) => {
-			console.log(publicToken, metadata);
-			exchangeTokens(publicToken).then(() => {});
-		},
-	});
+	// const { open, ready } = usePlaidLink({
+	// 	token: linkToken,
+	// 	onSuccess: (publicToken, metadata) => {
+	// 		exchangeTokens(publicToken)
+	// 			.then(() => {					
+	// 				handleReloadOnCreate()
+	// 			})
+	// 			.catch((error: any) => {
+	// 				console.log(error);
+					
+	// 			})
+	// 	},
+	// });
 
 	return (
 		<>
@@ -142,9 +177,16 @@ export const Dashboard = () => {
 
 				<Box>
 					{
-						incomeSources.map((incomeSource) => {
+						incomeSources.map((incomeSource: any) => {
 							return (
-								JSON.stringify(incomeSource)
+								<div>
+
+									{JSON.stringify(incomeSource)}
+									<br />
+									**********************
+								</div>
+								
+								
 							)
 						})
 					}

@@ -40,17 +40,18 @@ const basicLinkTokenObject = {
 };
 
 const createLinkToken = async () => {
+	
 	const linkTokenObject = {
 		...basicLinkTokenObject,
 		products: ["transactions"],
 	};
 	const tokenResponse = await client.linkTokenCreate(linkTokenObject);
+	
 	return tokenResponse.data;
 };
 
 const setAccessToken = async (publicToken: any, userId: string) => {
-	// const sessionId = getSessionId(userId);
-
+	
 	const tokenResponse = await client.itemPublicTokenExchange({
 		public_token: publicToken.publicToken,
 	});
@@ -62,18 +63,32 @@ const setAccessToken = async (publicToken: any, userId: string) => {
 	};
 
 	const incomeSource = await IncomeSource.create(data);
+	
+	const test = await retrieveBankInformation([{accessToken: data.accessToken}])
+	console.log(test);
+	
+	
+	return test
 
-	return "success";
-
-
-    //TODO: create plaid service function which gets called from the income source service to use access token to get data for given bank without sending token to frontend which would be ILLEGAL!
-
-	// console.log(tokenResponse);
-
-	// save these two to database
 };
 
+
+// called from incomeService.ts to retrieve account info via access token
+const retrieveBankInformation = async (x: any) => {
+	let arr = []
+	// console.log(x.length);
+	// console.log(x);
+	// console.log(x[0].accessToken);
+
+	
+	for (let i = 0; i < x.length; i++) {
+		const response = await client.accountsBalanceGet({access_token: x[i].accessToken})	
+		arr.push(response.data.accounts)
+	}
+	return arr
+}
 module.exports = {
 	createLinkToken,
 	setAccessToken,
+	retrieveBankInformation
 };

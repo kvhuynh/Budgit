@@ -14,9 +14,8 @@ const handleCreateLinkToken = async (req: any, res: any) => {
 	try {
 		const linkToken = await createLinkToken();
 
-		// console.log(linkToken);
-
-		return linkToken
+		return res.json(linkToken)
+		// return linkToken
 	} catch (error: any) {
 		console.log(error);
 
@@ -27,7 +26,10 @@ const handleCreateLinkToken = async (req: any, res: any) => {
 const handleSetAccessToken = async (req: any, res: any) => {
     try {
 
-        const accessToken = setAccessToken(req.body, req.cookies.usertoken)
+        const accessToken = await setAccessToken(req.body, req.cookies.usertoken)
+		console.log(accessToken);
+		
+		return res.json(accessToken)
         
     } catch (error: any) {
         console.log(error);
