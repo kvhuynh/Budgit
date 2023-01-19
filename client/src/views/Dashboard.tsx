@@ -54,7 +54,7 @@ export const Dashboard = () => {
 					console.log(item);
 					// setIncomeSources({incomeSources: [...incomeSources, item]})
 					setIncomeSources([...incomeSources, item])
-					// handleReloadOnCreate()
+					handleReloadOnCreate()
 				})
 				.catch((error: any) => {
 					console.log(error);
@@ -94,6 +94,7 @@ export const Dashboard = () => {
 						
 						setIncomeSources(incomeSources)
 						// setIncomeSources({...incomeSources, incomeSources})
+						// handleReloadOnCreate()
 
 
 					})
@@ -112,6 +113,10 @@ export const Dashboard = () => {
 		console.log("i got called");
 		
 	};
+
+	const calculateTotalWorth = () => {
+		
+	}
 
 	// const { open, ready } = usePlaidLink({
 	// 	token: linkToken,
@@ -178,11 +183,28 @@ export const Dashboard = () => {
 				<Box>
 					{
 						incomeSources.map((incomeSource: any) => {
+							console.log("here1")
+							console.log(incomeSources);
+							
 							return (
 								<div>
-
-									{JSON.stringify(incomeSource)}
+									{/* {JSON.stringify(incomeSource)} */}
 									<br />
+									{
+										incomeSource.map((source: any) => {
+											console.log("here2");
+											
+											return(
+												<div>
+													{/* {source.balances.current ? source.balances.current : "no"} */}
+													{source.name}: 
+													{source.balances ? source.balances.current : null}
+													{/* {JSON.stringify(source)} */}
+
+												</div>
+											)
+										})
+									}
 									**********************
 								</div>
 								
