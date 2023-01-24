@@ -12,6 +12,8 @@ import { CreateBudgetPopUp } from "../components/CreateBudgetPopUp";
 
 import { Link, useNavigate } from "react-router-dom";
 
+import { PieChart } from "../components/graphs/PieChart"
+
 import {
 	getCurrentUser,
 	logoutUser,
@@ -44,6 +46,7 @@ export const Dashboard = () => {
 	const [linkToken, setLinkToken] = useState(null);
 	// const [incomeSources, setIncomeSources] = useState([]);
 	const [incomeSources, setIncomeSources] = useState<any>([]);
+	const [totalWorth, setTotalWorth] = useState<number>(0);
 
 
 	const { open, ready } = usePlaidLink({
@@ -92,10 +95,8 @@ export const Dashboard = () => {
 						console.log(incomeSources);
 						console.log(values);
 						
-						setIncomeSources(incomeSources)
-						// setIncomeSources({...incomeSources, incomeSources})
-						// handleReloadOnCreate()
-
+						setIncomeSources(incomeSources.incomeSources)
+						setTotalWorth(incomeSources.total)
 
 					})
 					.catch((error: any) => {
@@ -114,29 +115,46 @@ export const Dashboard = () => {
 		
 	};
 
-	const calculateTotalWorth = () => {
-		
-	}
 
-	// const { open, ready } = usePlaidLink({
-	// 	token: linkToken,
-	// 	onSuccess: (publicToken, metadata) => {
-	// 		exchangeTokens(publicToken)
-	// 			.then(() => {					
-	// 				handleReloadOnCreate()
-	// 			})
-	// 			.catch((error: any) => {
-	// 				console.log(error);
-					
-	// 			})
-	// 	},
-	// });
 
 	return (
 		<>
 			<div>
 				Welcome {values.firstName}
 				<br />
+				<Button onClick={() => open()}>link bank account</Button>
+				{(incomeSources.length !== 0) ? <PieChart totalWorth={totalWorth} data={incomeSources}></PieChart> : "yo"}
+				{/* // <PieChart totalWorth={totalWorth} data={incomeSources}></PieChart> */}
+				<Box>
+					{
+						
+						incomeSources.map((incomeSource: any) => {	
+							return (
+								<div>
+									<div>
+										{/* {JSON.stringify(incomeSource)} */}
+										<br />
+										{
+											incomeSource.map((source: any) => {					
+												return(
+													<div>
+														{/* {source.balances.current ? source.balances.current : "no"} */}
+														{source.name}: 
+														{source.balances ? source.balances.current : null}
+														{/* {JSON.stringify(source)} */}
+
+													</div>
+												)
+											})
+										}
+										**********************
+									</div>
+									{/* {totalWorth} */}
+								</div>
+							)
+						})
+					}
+				</Box>
 				<CreateBudgetPopUp
 					reload={() => handleReloadOnCreate()}
 					createBudgetItem={false}
@@ -175,43 +193,6 @@ export const Dashboard = () => {
 							</div>
 						);
 					})}
-				</Box>
-				{/* <Button onClick={handleLinkBank}>link bank account</Button>
-				 */}
-				<Button onClick={() => open()}>link bank account</Button>
-
-				<Box>
-					{
-						incomeSources.map((incomeSource: any) => {
-							console.log("here1")
-							console.log(incomeSources);
-							
-							return (
-								<div>
-									{/* {JSON.stringify(incomeSource)} */}
-									<br />
-									{
-										incomeSource.map((source: any) => {
-											console.log("here2");
-											
-											return(
-												<div>
-													{/* {source.balances.current ? source.balances.current : "no"} */}
-													{source.name}: 
-													{source.balances ? source.balances.current : null}
-													{/* {JSON.stringify(source)} */}
-
-												</div>
-											)
-										})
-									}
-									**********************
-								</div>
-								
-								
-							)
-						})
-					}
 				</Box>
 			</div>
 			{/* <button onClick={() => handleSubmit()}>click me</button> */}

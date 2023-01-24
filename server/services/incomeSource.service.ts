@@ -18,9 +18,24 @@ const getAllIncomeSources = async (userToken: string) => {
     
     const incomeSources = await retrieveBankInformation(accessIncomeSources);
 
-    console.log("retrieving income sources from database: " + incomeSources.length);
+    let total = 0;
+    for (let i = 0; i < incomeSources.length; i++) {
+        // console.log(incomeSources[i].length);
+        
+        for (let j = 0; j < incomeSources[i].length; j++) {
+            total += incomeSources[i][j].balances.current  
+        }   
+        console.log("*************");
+    }
+
     
-    return incomeSources
+    console.log(total);
+    
+    console.log("do we get here");
+    
+    return {incomeSources: incomeSources, total: total}
+
+    // return incomeSources
 };
 
 module.exports = {
