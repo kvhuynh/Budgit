@@ -15,7 +15,13 @@ const {
 // const APP_PORT = process.env.APP_PORT || 8000;
 const PLAID_CLIENT_ID = process.env.PLAID_CLIENT_ID;
 const PLAID_SECRET = process.env.PLAID_SECRET;
-const PLAID_ENV = process.env.PLAID_ENV || "sandbox";
+// const PLAID_ENV = process.env.PLAID_ENV || "sandbox";
+const PLAID_ENV = process.env.PLAID_ENV || "development";
+
+// const PLAID_ENV = process.env.PLAID_ENV;
+
+console.log(PLAID_ENV);
+
 
 const configuration = new Configuration({
 	basePath: PlaidEnvironments[PLAID_ENV],
@@ -93,8 +99,16 @@ const retrieveBankInformation = async (x: any) => {
 	}
 	
 }
+
+const retrieveTransactions = async (accessToken: any) => {
+	const transactionResult = await client.transactionsSync({acess_token: accessToken})
+	console.log(transactionResult);
+	
+}
+
 module.exports = {
 	createLinkToken,
 	setAccessToken,
-	retrieveBankInformation
+	retrieveBankInformation,
+	retrieveTransactions
 };

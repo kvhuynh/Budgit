@@ -4,7 +4,8 @@ import { User } from "../models/user.model";
 import { IncomeSource } from "../models/incomeSource.model";
 
 const {
-    retrieveBankInformation
+    retrieveBankInformation,
+    retrieveTransactions
 } = require("./plaid.service")
 
 const { getSessionId } = require("../utilities/getSessionId.utilities");
@@ -38,6 +39,20 @@ const getAllIncomeSources = async (userToken: string) => {
     // return incomeSources
 };
 
+const handleRetrieveTransactions = async (userToken: string) => {
+
+    const userSession = getSessionId(userToken);
+    
+    const accessIncomeSources = await IncomeSource.findAll({ where:{ user_id: userSession } })
+
+    
+    const incomeSources = await retrieveTransactions(accessIncomeSources);
+    console.log(incomeSources);
+    
+
+}
+
 module.exports = {
-    getAllIncomeSources
+    getAllIncomeSources,
+    handleRetrieveTransactions
 };

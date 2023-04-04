@@ -10,7 +10,7 @@ import { usePlaidLink } from "react-plaid-link";
 
 import { useEffect, useState } from "react";
 import { CreateBudgetPopUp } from "../components/CreateBudgetPopUp";
-import { TransactionTable } from "../components/TransactionTable"
+import { TransactionTable } from "../components/TransactionTable";
 
 import { Link, useNavigate } from "react-router-dom";
 
@@ -123,10 +123,9 @@ export const Dashboard = () => {
 					<PieChart totalWorth={totalWorth} data={incomeSources}></PieChart>
 				) : (
 					<Box sx={{ display: "flex", justifyContent: "center" }}>
-						{/* <CircularProgress /> */}
+						<CircularProgress />
 					</Box>
 				)}
-				
 				{/* <TransactionTable data={incomeSources}></TransactionTable> */}
 				<Box>
 					{incomeSources.map((incomeSource: any) => {
