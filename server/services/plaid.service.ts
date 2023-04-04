@@ -82,17 +82,15 @@ const setAccessToken = async (publicToken: any, userId: string) => {
 
 // called from incomeService.ts to retrieve account info via access token
 const retrieveBankInformation = async (x: any) => {
-	let arr = []
-	console.log("do we get here cleanly");
-	console.log(x[0].accessToken);
+	let bankList = []
 	
 	try {
 
 		for (let i = 0; i < x.length; i++) {
 			const response = await client.accountsBalanceGet({access_token: x[i].accessToken})	
-			arr.push(response.data.accounts)
+			bankList.push(response.data.accounts)
 		}
-		return arr
+		return bankList
 	} catch (error) {
 		console.log(error);
 		
@@ -100,9 +98,13 @@ const retrieveBankInformation = async (x: any) => {
 	
 }
 
-const retrieveTransactions = async (accessToken: any) => {
-	const transactionResult = await client.transactionsSync({acess_token: accessToken})
-	console.log(transactionResult);
+const retrieveTransactions = async (accessTokens: any) => {
+	
+	let transactionList = [];
+	for (let i = 0; i < accessTokens.length; i++) {
+		const transactionResults = await client.transactionsSync({access_token: accessTokens[i].accessToken})
+		transactionList.push(transactionResults[i])
+	}
 	
 }
 

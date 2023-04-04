@@ -22,6 +22,7 @@ import {
 	getAllBudgets,
 	deleteBudget,
 	getAllIncomeSources,
+	getAllTransactions
 } from "../services/internalApiService";
 
 import { createLinkToken, exchangeTokens } from "../services/plaidApiService";
@@ -100,6 +101,16 @@ export const Dashboard = () => {
 					.catch((error: any) => {
 						console.log(error);
 					});
+				getAllTransactions()
+					.then((transactions: any) => {
+						console.log("retrieving transactions...")
+						console.log(transactions);
+						
+					})
+					.catch((error: any) => {
+						console.log(error);
+						
+					})
 			})
 			.catch((error: any) => {
 				navigate("/");

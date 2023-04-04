@@ -28,31 +28,26 @@ const getAllIncomeSources = async (userToken: string) => {
         }   
         console.log("*************");
     }
-
-    
-    console.log(total);
-    
-    console.log("do we get here");
     
     return {incomeSources: incomeSources, total: total}
 
     // return incomeSources
 };
 
-const handleRetrieveTransactions = async (userToken: string) => {
+const getTransactions = async (userToken: string) => {
 
     const userSession = getSessionId(userToken);
     
+    
     const accessIncomeSources = await IncomeSource.findAll({ where:{ user_id: userSession } })
-
+    
     
     const incomeSources = await retrieveTransactions(accessIncomeSources);
-    console.log(incomeSources);
     
 
 }
 
 module.exports = {
     getAllIncomeSources,
-    handleRetrieveTransactions
+    getTransactions
 };
