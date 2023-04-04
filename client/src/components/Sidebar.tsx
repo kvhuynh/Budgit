@@ -192,7 +192,7 @@ export function Sidebar() {
 				</DrawerHeader>
 				<Divider />
 				<List >
-					{["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
+					{["Inbox", "About", "Send email", "Drafts"].map((text, index) => (
 						<ListItem key={text} disablePadding sx={{ display: "block" }}>
 							<ListItemButton
 								sx={{

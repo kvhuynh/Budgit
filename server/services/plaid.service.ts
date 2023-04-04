@@ -65,6 +65,7 @@ const setAccessToken = async (publicToken: any, userId: string) => {
 	const incomeSource = await IncomeSource.create(data);
 	
 	const test = await retrieveBankInformation([{accessToken: data.accessToken}])
+	
 	console.log(test);
 	
 	
@@ -76,16 +77,21 @@ const setAccessToken = async (publicToken: any, userId: string) => {
 // called from incomeService.ts to retrieve account info via access token
 const retrieveBankInformation = async (x: any) => {
 	let arr = []
-	// console.log(x.length);
-	// console.log(x);
-	// console.log(x[0].accessToken);
-
+	console.log("do we get here cleanly");
+	console.log(x[0].accessToken);
 	
-	for (let i = 0; i < x.length; i++) {
-		const response = await client.accountsBalanceGet({access_token: x[i].accessToken})	
-		arr.push(response.data.accounts)
+	try {
+
+		for (let i = 0; i < x.length; i++) {
+			const response = await client.accountsBalanceGet({access_token: x[i].accessToken})	
+			arr.push(response.data.accounts)
+		}
+		return arr
+	} catch (error) {
+		console.log(error);
+		
 	}
-	return arr
+	
 }
 module.exports = {
 	createLinkToken,

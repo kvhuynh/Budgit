@@ -5,9 +5,8 @@ export const PieChart = (props: any) => {
 
     const [chartData, setChartData] = useState<Array<Object>>([])
 
-    // TODO GROUP INCOME SOURCES BY NAME 
+    // TODO GROUP INCOME SOURCES BY NAME - POP UP ASKING FOR NAME OF GROUP
     useEffect(() => {
-        console.log(props.data);
         let newArr = []
         for (let i = 0; i < props.data.length; i++) {
             for (let j = 0; j < props.data[i].length; j++) {
@@ -17,10 +16,12 @@ export const PieChart = (props: any) => {
 
         
         }
-        console.log(newArr);
         
-        // TODO use spread operator to spread in old values before adding new one
+        // TODO use spread operator to spread in old values before adding new one use filter
         setChartData(newArr)
+        // console.log([...chartData, newArr]);
+        
+        // setChartData([...chartData, newArr])
             
         
     }, [props])

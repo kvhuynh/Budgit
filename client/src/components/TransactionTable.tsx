@@ -1,16 +1,29 @@
 import * as React from 'react';
+import { useState, useEffect } from "react"
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { log } from 'console';
 
 const columns: GridColDef[] = [
-  { field: 'transactionType', headerName: 'ID', width: 70 },
-  { field: 'firstName', headerName: 'First name', width: 130 },
-  { field: 'lastName', headerName: 'Last name', width: 130 },
-  {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
-    width: 90,
+  { 
+    field: 'name', 
+    headerName: 'Name', 
+    width: 70,
+    valueGetter: (params: any) => {
+      console.log(params)
+    }
   },
+
+  { 
+    field: 'balance',
+    headerName: 'Balance', 
+    width: 130,
+    valueGetter: (params: any) => {
+      // console.log(params.id)
+    }
+  },
+  { field: 'limit', headerName: 'Limit', width: 130 },
+  { field: 'type', headerName: 'Type', width: 130 },
+
   {
     field: 'fullName',
     headerName: 'Full name',
@@ -34,7 +47,38 @@ const rows = [
   { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
 ];
 
-export function TransactionTable() {
+const defaultRows = [
+  {
+    id: 1,
+    Lot: "2101000134",
+    Bill: "M0000013092",
+    Shelf: "W13-A1",
+    Bin: "B01",
+    Rate: 221,
+    Stock: 128.0,
+    Transfer: 12,
+    Total: 234,
+  },
+];
+
+export const TransactionTable = (props: any) => {
+  console.log(props);
+  
+  // const [data, setData] = useState([])
+  // useEffect(() => {
+  //   // console.log(props.data);
+  //   for (let i = 0; i < props.data.length; i++) {
+  //     props.data[i].push(i)
+  //   }
+  //   console.log(props.data);
+    
+  // })
+
+  // const test = (data: any) => {
+
+  // }
+
+
   return (
     <div style={{ height: 400, width: '100%' }}>
       <DataGrid
@@ -44,6 +88,16 @@ export function TransactionTable() {
         rowsPerPageOptions={[5]}
         // checkboxSelection
       />
+      {/* <DataGrid
+        // rows={props.data}
+        rows={defaultRows}
+        // rows={rows}
+        columns={columns}
+        pageSize={5}
+        rowsPerPageOptions={[5]}
+        // getRowId={(row: any) => row[row.length-1]}
+        // checkboxSelection
+      /> */}
     </div>
   );
 }

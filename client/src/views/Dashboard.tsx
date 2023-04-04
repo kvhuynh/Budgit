@@ -4,15 +4,17 @@ import { CardActionArea } from "@mui/material";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import { usePlaidLink } from "react-plaid-link";
 
 import { useEffect, useState } from "react";
 import { CreateBudgetPopUp } from "../components/CreateBudgetPopUp";
+import { TransactionTable } from "../components/TransactionTable"
 
 import { Link, useNavigate } from "react-router-dom";
 
-import { PieChart } from "../components/graphs/PieChart"
+import { PieChart } from "../components/graphs/PieChart";
 
 import {
 	getCurrentUser,
@@ -48,21 +50,19 @@ export const Dashboard = () => {
 	const [incomeSources, setIncomeSources] = useState<any>([]);
 	const [totalWorth, setTotalWorth] = useState<number>(0);
 
-
 	const { open, ready } = usePlaidLink({
 		token: linkToken,
 		onSuccess: (publicToken, metadata) => {
 			exchangeTokens(publicToken)
-				.then((item: any) => {		
+				.then((item: any) => {
 					console.log(item);
 					// setIncomeSources({incomeSources: [...incomeSources, item]})
-					setIncomeSources([...incomeSources, item])
-					handleReloadOnCreate()
+					setIncomeSources([...incomeSources, item]);
+					handleReloadOnCreate();
 				})
 				.catch((error: any) => {
 					console.log(error);
-					
-				})
+				});
 		},
 	});
 
@@ -83,7 +83,6 @@ export const Dashboard = () => {
 					});
 				createLinkToken()
 					.then((token: any) => {
-						
 						setLinkToken(token.link_token);
 					})
 					.catch((error: any) => {
@@ -94,10 +93,9 @@ export const Dashboard = () => {
 					.then((incomeSources: any) => {
 						console.log(incomeSources);
 						console.log(values);
-						
-						setIncomeSources(incomeSources.incomeSources)
-						setTotalWorth(incomeSources.total)
 
+						setIncomeSources(incomeSources.incomeSources);
+						setTotalWorth(incomeSources.total);
 					})
 					.catch((error: any) => {
 						console.log(error);
@@ -111,11 +109,7 @@ export const Dashboard = () => {
 
 	const handleReloadOnCreate = () => {
 		setValues({ ...values, reload: !values.reload });
-		console.log("i got called");
-		
 	};
-
-
 
 	return (
 		<>
@@ -123,37 +117,40 @@ export const Dashboard = () => {
 				Welcome {values.firstName}
 				<br />
 				<Button onClick={() => open()}>link bank account</Button>
-				{(incomeSources.length !== 0) ? <PieChart totalWorth={totalWorth} data={incomeSources}></PieChart> : "yo"}
-				{/* // <PieChart totalWorth={totalWorth} data={incomeSources}></PieChart> */}
+				<br />
+				<h1>Total Money from connected Bank Accounts:</h1>
+				{incomeSources.length !== 0 ? (
+					<PieChart totalWorth={totalWorth} data={incomeSources}></PieChart>
+				) : (
+					<Box sx={{ display: "flex", justifyContent: "center" }}>
+						{/* <CircularProgress /> */}
+					</Box>
+				)}
+				
+				{/* <TransactionTable data={incomeSources}></TransactionTable> */}
 				<Box>
-					{
-						
-						incomeSources.map((incomeSource: any) => {	
-							return (
+					{incomeSources.map((incomeSource: any) => {
+						return (
+							<div>
 								<div>
-									<div>
-										{/* {JSON.stringify(incomeSource)} */}
-										<br />
-										{
-											incomeSource.map((source: any) => {					
-												return(
-													<div>
-														{/* {source.balances.current ? source.balances.current : "no"} */}
-														{source.name}: 
-														{source.balances ? source.balances.current : null}
-														{/* {JSON.stringify(source)} */}
-
-													</div>
-												)
-											})
-										}
-										**********************
-									</div>
-									{/* {totalWorth} */}
+									{JSON.stringify(incomeSource)}
+									<br />
+									{incomeSource.map((source: any) => {
+										return (
+											<div>
+												{/* {source.balances.current ? source.balances.current : "no"} */}
+												{source.name}:
+												{source.balances ? source.balances.current : null}
+												{/* {JSON.stringify(source)} */}
+											</div>
+										);
+									})}
+									**********************
 								</div>
-							)
-						})
-					}
+								{/* {totalWorth} */}
+							</div>
+						);
+					})}
 				</Box>
 				<CreateBudgetPopUp
 					reload={() => handleReloadOnCreate()}
