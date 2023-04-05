@@ -87,11 +87,11 @@ const retrieveBankInformation = async (x: any) => {
 	try {
 
 		for (let i = 0; i < x.length; i++) {
-			const response = await client.accountsBalanceGet({access_token: x[i].accessToken})	
-			bankList.push(response.data.accounts)
+			const bankAccount = await client.accountsBalanceGet({access_token: x[i].accessToken})	
+			bankList.push(bankAccount.data.accounts)
 		}
 		return bankList
-	} catch (error) {
+	} catch (error: any) {
 		console.log(error);
 		
 	}
@@ -100,10 +100,19 @@ const retrieveBankInformation = async (x: any) => {
 
 const retrieveTransactions = async (accessTokens: any) => {
 	
-	let transactionList = [];
-	for (let i = 0; i < accessTokens.length; i++) {
-		const transactionResults = await client.transactionsSync({access_token: accessTokens[i].accessToken})
-		transactionList.push(transactionResults[i])
+	let transactionList: Object[] = [];
+
+	try {
+		for (let i = 0; i < accessTokens.length; i++) {
+			const transactionResults = await client.transactionsSync({access_token: accessTokens[i].accessToken})
+			transactionList.push(transactionResults.data.added)
+			
+		}
+
+		return transactionList
+	} catch (error: any) {
+		console.log(error);
+		
 	}
 	
 }

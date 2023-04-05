@@ -14,8 +14,7 @@ export const LoginRegister = (props: any) => {
     useEffect(() => {
         getCurrentUser()
             .then((user: any) => {
-                console.log("hello from loginregister view");
-                
+
                 navigate("/dashboard")
             })
     })

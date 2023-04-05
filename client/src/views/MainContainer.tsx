@@ -1,4 +1,6 @@
 import * as React from "react";
+import { Link } from "react-router-dom";
+
 import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -16,17 +18,21 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import SummarizeIcon from "@mui/icons-material/Summarize";
 import Button from "@mui/material/Button";
+import InfoIcon from "@mui/icons-material/Info";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import CalculateIcon from "@mui/icons-material/Calculate";
 
 import { Routes, Route } from "react-router-dom";
-import { LoginRegister } from "../views/LoginRegister";
+import { LoginRegister } from "./LoginRegister";
 
-
-import ViewBudget from "../views/ViewBudget";
-import Dashboard from "../views/Dashboard";
-import ViewBudgetItem from "../views/ViewBudgetItem";
+import ViewBudget from "./ViewBudget";
+import Dashboard from "./Summary";
+import ViewBudgetItem from "./ViewBudgetItem";
+import Budgets from "./Budgets";
+import About from "./About";
+import Transactions from "./Transactions";
 
 import { useState, useEffect } from "react";
 
@@ -191,9 +197,15 @@ export function Sidebar() {
 					</IconButton>
 				</DrawerHeader>
 				<Divider />
-				<List >
-					{["Inbox", "About", "Send email", "Drafts"].map((text, index) => (
-						<ListItem key={text} disablePadding sx={{ display: "block" }}>
+				<List>
+					{["Summary", "Budgets", "Transactions"].map((text, index) => (
+						<ListItem
+							component={Link}
+							to={"/" + text.toLowerCase()}
+							key={text}
+							disablePadding
+							sx={{ display: "block" }}
+						>
 							<ListItemButton
 								sx={{
 									minHeight: 48,
@@ -208,7 +220,13 @@ export function Sidebar() {
 										justifyContent: "center",
 									}}
 								>
-									{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+									{index === 0 ? (
+										<SummarizeIcon />
+									) : index === 1 ? (
+										<CalculateIcon />
+									) : (
+										<ReceiptIcon />
+									)}
 								</ListItemIcon>
 								<ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
 							</ListItemButton>
@@ -217,8 +235,14 @@ export function Sidebar() {
 				</List>
 				<Divider />
 				<List>
-					{["All mail", "Stats", "Settings"].map((text, index) => (
-						<ListItem key={text} disablePadding sx={{ display: "block" }}>
+					{["About"].map((text, index) => (
+						<ListItem
+							component={Link}
+							to="/about"
+							key={text}
+							disablePadding
+							sx={{ display: "block" }}
+						>
 							<ListItemButton
 								sx={{
 									minHeight: 48,
@@ -233,7 +257,7 @@ export function Sidebar() {
 										justifyContent: "center",
 									}}
 								>
-									{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+									{index % 2 === 0 ? <InfoIcon /> : <InfoIcon />}
 								</ListItemIcon>
 								<ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
 							</ListItemButton>
@@ -245,13 +269,18 @@ export function Sidebar() {
 				<DrawerHeader />
 				<Routes>
 					<Route path="/" element={<LoginRegister />} />
-					<Route path="/dashboard" element={<Dashboard />} />
+					<Route path="/summary" element={<Dashboard />} />
+					<Route path="/budgets" element={<Budgets />}></Route>
 					<Route path="/budgets/:name" element={<ViewBudget />}></Route>
-					<Route path="/budgets/:name/:budgetItemId" element={<ViewBudgetItem />}></Route>
+					<Route
+						path="/budgets/:name/:budgetItemId"
+						element={<ViewBudgetItem />}
+					></Route>
+					<Route path="/about" element={<About />}></Route>
+					<Route path="/transactions" element={<Transactions />}></Route>
 				</Routes>
 			</Box>
 		</Box>
-        
 	);
 }
 
