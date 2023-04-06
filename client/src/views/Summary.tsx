@@ -22,7 +22,7 @@ import {
 	getAllBudgets,
 	deleteBudget,
 	getAllIncomeSources,
-	getAllTransactions
+	getAllTransactions,
 } from "../services/internalApiService";
 
 import { createLinkToken, exchangeTokens } from "../services/plaidApiService";
@@ -43,7 +43,7 @@ const initialState = {
 	reload: false,
 };
 
-export const Dashboard = () => {
+export const Summary = () => {
 	const [values, setValues] = useState<State>(initialState);
 	const navigate = useNavigate();
 	const [linkToken, setLinkToken] = useState(null);
@@ -103,14 +103,12 @@ export const Dashboard = () => {
 					});
 				getAllTransactions()
 					.then((transactions: any) => {
-						console.log("retrieving transactions...")
+						console.log("retrieving transactions...");
 						console.log(transactions);
-						
 					})
 					.catch((error: any) => {
 						console.log(error);
-						
-					})
+					});
 			})
 			.catch((error: any) => {
 				navigate("/");
@@ -124,87 +122,156 @@ export const Dashboard = () => {
 
 	return (
 		<>
-			<div>
-				Welcome {values.firstName}
-				<br />
-				<Button onClick={() => open()}>link bank account</Button>
-				<br />
-				<h1>Total Money from connected Bank Accounts:</h1>
-				{incomeSources.length !== 0 ? (
-					<PieChart totalWorth={totalWorth} data={incomeSources}></PieChart>
-				) : (
-					<Box sx={{ display: "flex", justifyContent: "center" }}>
-						<CircularProgress />
-					</Box>
-				)}
-				{/* <TransactionTable data={incomeSources}></TransactionTable> */}
-				<Box>
-					{incomeSources.map((incomeSource: any) => {
-						return (
-							<div>
+			<h1>Welcome, {values.firstName}</h1>
+			{/* Flex container */}
+			<Box
+				sx={{
+					display: "flex",
+					border: 1,
+					// justifyContent: "space-between",
+				}}
+			>
+				{/* Left side bar */}
+				<Box
+					sx={{
+						display: "flex",
+						flexDirection: "column",
+						border: 1,
+						flex: 1,
+					}}
+				>
+					<h1>Accounts:</h1>
+					{incomeSources.length !== 0 ? (
+						<PieChart totalWorth={totalWorth} data={incomeSources}></PieChart>
+					) : (
+						<Box sx={{ display: "flex", justifyContent: "center" }}>
+							<CircularProgress />
+						</Box>
+					)}
+
+						{incomeSources.map((incomeSource: any) => {
+							return (
 								<div>
-									{JSON.stringify(incomeSource)}
-									<br />
-									{incomeSource.map((source: any) => {
-										return (
-											<div>
-												{/* {source.balances.current ? source.balances.current : "no"} */}
-												{source.name}:
-												{source.balances ? source.balances.current : null}
-												{/* {JSON.stringify(source)} */}
-											</div>
-										);
-									})}
-									**********************
+									<div>
+										{/* {JSON.stringify(incomeSource)} */}
+										<br />
+										{incomeSource.map((source: any) => {
+											return (
+												<div>
+													{/* {source.balances.current ? source.balances.current : "no"} */}
+													{source.name}:
+													{source.balances ? source.balances.current : null}
+													{/* {JSON.stringify(source)} */}
+												</div>
+											);
+										})}
+										**********************
+									</div>
+									{/* {totalWorth} */}
+									<Button onClick={() => open()}>link bank account</Button>
 								</div>
-								{/* {totalWorth} */}
-							</div>
-						);
-					})}
+							);
+						})}
+
 				</Box>
-				<CreateBudgetPopUp
+				{/* Right side */}
+				<Box
+					sx={{
+						display: "flex",
+						flexDirection: "column",
+						flexWrap: "wrap",
+						border: 1,
+						flex: 3,
+						ml: 16
+					}}
+				>
+					<Box
+						sx={{
+							display: "flex",
+							flexDirection: "column",
+							justifyContent: "space-between",
+						}}
+						>
+
+						<Box
+							sx={{
+								display: "flex",
+								flexDirection: "column",
+								border: 1,
+								mb: 10,
+							}}
+						>
+							<h1>Budgets</h1>
+							<Box
+								sx={{
+									display: "flex",
+									justifyContent: "space-around",
+									flexWrap: "wrap",
+								}}
+							>
+
+								{values.budgets.map((budget) => {
+									const { name } = budget;
+									return (
+										<div key={name}>
+											<Card variant="outlined" sx={{ width: 200 }}>
+												<CardActionArea component={Link} to={`/budgets/${name}`}>
+													<CardContent>
+														<Typography
+															sx={{ fontSize: 25 }}
+															color="text.secondary"
+															gutterBottom
+														>
+															{budget.name}
+														</Typography>
+														<Typography variant="body2">
+															Limit: ${budget.totalBalance}
+														</Typography>
+													</CardContent>
+												</CardActionArea>
+											</Card>
+										</div>
+									);
+								})}
+							</Box>
+
+						</Box>
+					<Box
+						sx={{
+							border: 1,
+							mb: 10,
+							
+						}}
+					>
+						<h1>Transactions</h1>
+						<TransactionTable data={incomeSources}></TransactionTable>
+					</Box>
+					<Box
+						sx={{
+							border: 1,
+							mb: 10,
+							
+						}}
+					>
+						<h1>Goals</h1>
+					</Box>
+
+
+
+
+					</Box>
+				</Box>
+			</Box>
+			<CreateBudgetPopUp
 					reload={() => handleReloadOnCreate()}
 					createBudgetItem={false}
 					text={"create budget"}
 				></CreateBudgetPopUp>
 				{values.totalAccountBalance}
-			</div>
-			<div>
-				<Box
-					sx={{
-						display: "flex",
-						justifyContent: "space-around",
-						flexWrap: "wrap",
-					}}
-				>
-					{values.budgets.map((budget) => {
-						const { name } = budget;
-						return (
-							<div key={name}>
-								<Card variant="outlined" sx={{ width: 200 }}>
-									<CardActionArea component={Link} to={`/budgets/${name}`}>
-										<CardContent>
-											<Typography
-												sx={{ fontSize: 25 }}
-												color="text.secondary"
-												gutterBottom
-											>
-												{budget.name}
-											</Typography>
-											<Typography variant="body2">
-												Limit: ${budget.totalBalance}
-											</Typography>
-										</CardContent>
-									</CardActionArea>
-								</Card>
-							</div>
-						);
-					})}
-				</Box>
-			</div>
+
 			{/* <button onClick={() => handleSubmit()}>click me</button> */}
 		</>
 	);
 };
 
-export default Dashboard;
+export default Summary;

@@ -42,7 +42,7 @@ export const Login = () => {
         loginUser(values)
             .then((user) => {
                 
-                navigate(`/dashboard/`);
+                navigate(`/summary/`);
             })
             .catch((error: any) => {
                 console.log(error);

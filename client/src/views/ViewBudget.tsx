@@ -110,7 +110,7 @@ export const ViewBudget = (props: any) => {
 	const handleDelete = (budgetId: number) => {
 		deleteBudget(budgetId)
 			.then(() => {
-				handleNavigate("dashboard");
+				handleNavigate("summary");
 			})
 			.catch((error: any) => {
 				console.log(error);
@@ -177,8 +177,8 @@ export const ViewBudget = (props: any) => {
 	return (
 		<>
 			<Box sx={{ display: "flex", justifyContent: "space-between" }}>
-				<Button onClick={() => handleNavigate("dashboard")}>
-					Back to Budgets
+				<Button onClick={() => handleNavigate("summary")}>
+					Back to Summary
 				</Button>
 			</Box>
 

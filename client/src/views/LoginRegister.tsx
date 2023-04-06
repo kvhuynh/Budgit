@@ -15,7 +15,7 @@ export const LoginRegister = (props: any) => {
         getCurrentUser()
             .then((user: any) => {
 
-                navigate("/dashboard")
+                navigate("/summary")
             })
     })
     

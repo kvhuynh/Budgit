@@ -28,7 +28,7 @@ import { Routes, Route } from "react-router-dom";
 import { LoginRegister } from "./LoginRegister";
 
 import ViewBudget from "./ViewBudget";
-import Dashboard from "./Summary";
+import Summary from "./Summary";
 import ViewBudgetItem from "./ViewBudgetItem";
 import Budgets from "./Budgets";
 import About from "./About";
@@ -202,6 +202,7 @@ export function Sidebar() {
 						<ListItem
 							component={Link}
 							to={"/" + text.toLowerCase()}
+							style={{ color: "black" }}
 							key={text}
 							disablePadding
 							sx={{ display: "block" }}
@@ -269,7 +270,7 @@ export function Sidebar() {
 				<DrawerHeader />
 				<Routes>
 					<Route path="/" element={<LoginRegister />} />
-					<Route path="/summary" element={<Dashboard />} />
+					<Route path="/summary" element={<Summary />} />
 					<Route path="/budgets" element={<Budgets />}></Route>
 					<Route path="/budgets/:name" element={<ViewBudget />}></Route>
 					<Route

@@ -1,6 +1,6 @@
 export const Budgets = () => {
     return (
-        <div>yo</div>
+        <div>budget page</div>
     )
 }
 
