@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import { usePlaidLink } from "react-plaid-link";
+import Cookies from "js-cookie";
 
 import { useEffect, useState } from "react";
 import { CreateBudgetPopUp } from "../components/CreateBudgetPopUp";
@@ -43,7 +44,7 @@ const initialState = {
 	reload: false,
 };
 
-export const Summary = () => {
+export const Summary = (props: any) => {
 	const [values, setValues] = useState<State>(initialState);
 	const navigate = useNavigate();
 	const [linkToken, setLinkToken] = useState(null);
@@ -56,7 +57,7 @@ export const Summary = () => {
 		onSuccess: (publicToken, metadata) => {
 			exchangeTokens(publicToken)
 				.then((item: any) => {
-					console.log(item);
+					// console.log(item);
 					// setIncomeSources({incomeSources: [...incomeSources, item]})
 					setIncomeSources([...incomeSources, item]);
 					handleReloadOnCreate();
@@ -68,53 +69,144 @@ export const Summary = () => {
 	});
 
 	useEffect(() => {
-		getCurrentUser()
-			.then((user: any) => {
-				getAllBudgets()
-					.then((budgets: any) => {
-						setValues({
-							...values,
-							firstName: user.firstName,
-							budgets: budgets.budgets,
-							totalAccountBalance: budgets.totalBalance,
+		if (Cookies.get("summary") !== undefined) {
+			setValues(JSON.parse(Cookies.get("summary")!).values)
+			setIncomeSources(JSON.parse(Cookies.get("summary")!).incomeSources)
+			setTotalWorth(JSON.parse(Cookies.get("summary")!).totalWorth)
+		}
+		 else {
+			console.log("yo");
+			
+		 }
+	}, [])
+
+	useEffect(() => {
+		// TODO TEST PARAMETERS FOR USE EFFECT RELOAD
+
+		if (incomeSources.length !== 0) {
+			console.log("hello");
+			Cookies.set("summary", JSON.stringify({values: values, incomeSources: incomeSources, totalWorth: totalWorth}))
+			
+		}
+		if (Cookies.get("summary") === undefined) {
+			getCurrentUser()
+				.then((user: any) => {
+					getAllBudgets()
+						.then((budgets: any) => {
+							setValues({
+								...values,
+								firstName: user.firstName,
+								budgets: budgets.budgets,
+								totalAccountBalance: budgets.totalBalance,
+							})
+						})
+						.catch((err: any) => {
+							console.log(err);
 						});
-					})
-					.catch((err: any) => {
-						console.log(err);
-					});
-				createLinkToken()
-					.then((token: any) => {
-						setLinkToken(token.link_token);
-					})
-					.catch((error: any) => {
-						console.log(error);
-					});
+					createLinkToken()
+						.then((token: any) => {
+							
+							setLinkToken(token.link_token);
+						})
+						.catch((error: any) => {
+							console.log(error);
+						});
 
-				getAllIncomeSources()
-					.then((incomeSources: any) => {
-						console.log(incomeSources);
-						console.log(values);
+					getAllIncomeSources()
+						.then((incomeSources: any) => {
+							// console.log(incomeSources);
 
-						setIncomeSources(incomeSources.incomeSources);
-						setTotalWorth(incomeSources.total);
-					})
-					.catch((error: any) => {
-						console.log(error);
-					});
-				getAllTransactions()
-					.then((transactions: any) => {
-						console.log("retrieving transactions...");
-						console.log(transactions);
-					})
-					.catch((error: any) => {
-						console.log(error);
-					});
-			})
-			.catch((error: any) => {
-				navigate("/");
-				console.log(error);
-			});
-	}, []);
+							setIncomeSources(incomeSources.incomeSources);
+							setTotalWorth(incomeSources.total);
+						})
+						.catch((error: any) => {
+							console.log(error);
+						});
+					getAllTransactions()
+						.then((transactions: any) => {
+							// console.log("retrieving transactions...");
+							// console.log(transactions);
+
+						})
+						.catch((error: any) => {
+							console.log(error);
+						});
+				})
+				.catch((error: any) => {
+					navigate("/");
+					console.log(error);
+				});
+		} else {
+			// setValues(JSON.parse(Cookies.get("summary")!).values)
+			// setIncomeSources(JSON.parse(Cookies.get("summary")!).incomeSources)
+			// setTotalWorth(JSON.parse(Cookies.get("summary")!).totalWorth)
+
+			// console.log(JSON.parse(Cookies.get("summary")!));
+			// JSON.parse(Cookies.get("summary"))
+		}
+	}, [values.reload, incomeSources]);
+		// TODO TEST PARAMETERS FOR USE EFFECT RELOAD
+
+
+		
+	// * ORIGINAL COPY OF USEEFFECT BELOW
+	// useEffect(() => {
+
+	// 	if (Cookies.get("summary") === undefined) {
+	// 		getCurrentUser()
+	// 			.then((user: any) => {
+	// 				getAllBudgets()
+	// 					.then((budgets: any) => {
+	// 						setValues({
+	// 							...values,
+	// 							firstName: user.firstName,
+	// 							budgets: budgets.budgets,
+	// 							totalAccountBalance: budgets.totalBalance,
+	// 						})
+	// 					})
+	// 					.catch((err: any) => {
+	// 						console.log(err);
+	// 					});
+	// 				createLinkToken()
+	// 					.then((token: any) => {
+							
+	// 						setLinkToken(token.link_token);
+	// 					})
+	// 					.catch((error: any) => {
+	// 						console.log(error);
+	// 					});
+
+	// 				getAllIncomeSources()
+	// 					.then((incomeSources: any) => {
+	// 						// console.log(incomeSources);
+
+	// 						setIncomeSources(incomeSources.incomeSources);
+	// 						setTotalWorth(incomeSources.total);
+	// 					})
+	// 					.catch((error: any) => {
+	// 						console.log(error);
+	// 					});
+	// 				getAllTransactions()
+	// 					.then((transactions: any) => {
+	// 						// console.log("retrieving transactions...");
+	// 						// console.log(transactions);
+
+	// 					})
+	// 					.catch((error: any) => {
+	// 						console.log(error);
+	// 					});
+	// 			})
+	// 			.catch((error: any) => {
+	// 				navigate("/");
+	// 				console.log(error);
+	// 			});
+	// 	} else {
+	// 		// setValues(Cookies.get("summary"))
+	// 		// console.log(JSON.parse(Cookies.get("summary")!));
+	// 		// JSON.parse(Cookies.get("summary"))
+	// 	}
+	// }, [values.reload]);
+
 
 	const handleReloadOnCreate = () => {
 		setValues({ ...values, reload: !values.reload });
@@ -150,30 +242,29 @@ export const Summary = () => {
 						</Box>
 					)}
 
-						{incomeSources.map((incomeSource: any) => {
-							return (
+					{incomeSources.map((incomeSource: any) => {
+						return (
+							<div>
 								<div>
-									<div>
-										{/* {JSON.stringify(incomeSource)} */}
-										<br />
-										{incomeSource.map((source: any) => {
-											return (
-												<div>
-													{/* {source.balances.current ? source.balances.current : "no"} */}
-													{source.name}:
-													{source.balances ? source.balances.current : null}
-													{/* {JSON.stringify(source)} */}
-												</div>
-											);
-										})}
-										**********************
-									</div>
-									{/* {totalWorth} */}
-									<Button onClick={() => open()}>link bank account</Button>
+									{/* {JSON.stringify(incomeSource)} */}
+									<br />
+									{incomeSource.map((source: any) => {
+										return (
+											<div>
+												{/* {source.balances.current ? source.balances.current : "no"} */}
+												{source.name}:
+												{source.balances ? source.balances.current : null}
+												{/* {JSON.stringify(source)} */}
+											</div>
+										);
+									})}
+									**********************
 								</div>
-							);
-						})}
-
+								{/* {totalWorth} */}
+								<Button onClick={() => open()}>link bank account</Button>
+							</div>
+						);
+					})}
 				</Box>
 				{/* Right side */}
 				<Box
@@ -184,7 +275,7 @@ export const Summary = () => {
 						border: 1,
 						borderRadius: 1,
 						flex: 3,
-						ml: 16
+						ml: 16,
 					}}
 				>
 					<Box
@@ -193,8 +284,7 @@ export const Summary = () => {
 							flexDirection: "column",
 							justifyContent: "space-between",
 						}}
-						>
-
+					>
 						<Box
 							sx={{
 								display: "flex",
@@ -211,13 +301,15 @@ export const Summary = () => {
 									flexWrap: "wrap",
 								}}
 							>
-
 								{values.budgets.map((budget) => {
 									const { name } = budget;
 									return (
 										<div key={name}>
 											<Card variant="outlined" sx={{ width: 200 }}>
-												<CardActionArea component={Link} to={`/budgets/${name}`}>
+												<CardActionArea
+													component={Link}
+													to={`/budgets/${name}`}
+												>
 													<CardContent>
 														<Typography
 															sx={{ fontSize: 25 }}
@@ -236,46 +328,37 @@ export const Summary = () => {
 									);
 								})}
 							</Box>
-
 						</Box>
-					<Box
-						sx={{
-							border: 1,
-							borderRadius: 1,
+						<Box
+							sx={{
+								border: 1,
+								borderRadius: 1,
 
-							mb: 10,
-							
-						}}
-					>
-						<h1>Transactions</h1>
-						<TransactionTable data={incomeSources}></TransactionTable>
-					</Box>
-					<Box
-						sx={{
-							border: 1,
-							borderRadius: 1,
+								mb: 10,
+							}}
+						>
+							<h1>Transactions</h1>
+							{/* <TransactionTable data={incomeSources}></TransactionTable> */}
+						</Box>
+						<Box
+							sx={{
+								border: 1,
+								borderRadius: 1,
 
-							mb: 10,
-							
-						}}
-					>
-						<h1>Goals</h1>
-					</Box>
-
-
-
-
+								mb: 10,
+							}}
+						>
+							<h1>Goals</h1>
+						</Box>
 					</Box>
 				</Box>
 			</Box>
 			<CreateBudgetPopUp
-					reload={() => handleReloadOnCreate()}
-					createBudgetItem={false}
-					text={"create budget"}
-				></CreateBudgetPopUp>
-				{values.totalAccountBalance}
-
-			{/* <button onClick={() => handleSubmit()}>click me</button> */}
+				reload={() => handleReloadOnCreate()}
+				createBudgetItem={false}
+				text={"create budget"}
+			></CreateBudgetPopUp>
+			{values.totalAccountBalance}
 		</>
 	);
 };

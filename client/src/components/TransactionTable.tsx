@@ -62,7 +62,7 @@ const defaultRows = [
 ];
 
 export const TransactionTable = (props: any) => {
-  console.log(props);
+  // console.log(props);
   
   // const [data, setData] = useState([])
   // useEffect(() => {
