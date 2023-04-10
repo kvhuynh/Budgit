@@ -114,7 +114,7 @@ export const Summary = () => {
 				navigate("/");
 				console.log(error);
 			});
-	}, [values.reload]);
+	}, []);
 
 	const handleReloadOnCreate = () => {
 		setValues({ ...values, reload: !values.reload });
@@ -137,6 +137,7 @@ export const Summary = () => {
 						display: "flex",
 						flexDirection: "column",
 						border: 1,
+						borderRadius: 1,
 						flex: 1,
 					}}
 				>
@@ -181,6 +182,7 @@ export const Summary = () => {
 						flexDirection: "column",
 						flexWrap: "wrap",
 						border: 1,
+						borderRadius: 1,
 						flex: 3,
 						ml: 16
 					}}
@@ -239,6 +241,8 @@ export const Summary = () => {
 					<Box
 						sx={{
 							border: 1,
+							borderRadius: 1,
+
 							mb: 10,
 							
 						}}
@@ -249,6 +253,8 @@ export const Summary = () => {
 					<Box
 						sx={{
 							border: 1,
+							borderRadius: 1,
+
 							mb: 10,
 							
 						}}

@@ -1,6 +1,6 @@
 export const Transactions = () => {
     return (
-        <div>yo</div>
+        <h1>All Accounts</h1>
     )
 }
 

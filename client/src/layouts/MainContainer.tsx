@@ -25,14 +25,14 @@ import ReceiptIcon from "@mui/icons-material/Receipt";
 import CalculateIcon from "@mui/icons-material/Calculate";
 
 import { Routes, Route } from "react-router-dom";
-import { LoginRegister } from "./LoginRegister";
+import { LoginRegister } from "../views/LoginRegister";
 
-import ViewBudget from "./ViewBudget";
-import Summary from "./Summary";
-import ViewBudgetItem from "./ViewBudgetItem";
-import Budgets from "./Budgets";
-import About from "./About";
-import Transactions from "./Transactions";
+import ViewBudget from "../views/ViewBudget";
+import Summary from "../views/Summary";
+import ViewBudgetItem from "../views/ViewBudgetItem";
+import Budgets from "../views/Budgets";
+import About from "../views/About";
+import Transactions from "../views/Transactions";
 
 import { useState, useEffect } from "react";
 
@@ -271,7 +271,7 @@ export function Sidebar() {
 				<Routes>
 					<Route path="/" element={<LoginRegister />} />
 					<Route path="/summary" element={<Summary />} />
-					<Route path="/budgets" element={<Budgets />}></Route>
+					<Route path="/budgets" element={<Budgets test="test" />}></Route>
 					<Route path="/budgets/:name" element={<ViewBudget />}></Route>
 					<Route
 						path="/budgets/:name/:budgetItemId"
