@@ -51,14 +51,14 @@ export const Summary = (props: any) => {
 	// const [incomeSources, setIncomeSources] = useState([]);
 	const [incomeSources, setIncomeSources] = useState<any>([]);
 	const [totalWorth, setTotalWorth] = useState<number>(0);
+	const [transactions, setTransactions] = useState<any>([]);
+	const [isRetrieved, setIsRetrieved] = useState(false);
 
 	const { open, ready } = usePlaidLink({
 		token: linkToken,
 		onSuccess: (publicToken, metadata) => {
 			exchangeTokens(publicToken)
 				.then((item: any) => {
-					// console.log(item);
-					// setIncomeSources({incomeSources: [...incomeSources, item]})
 					setIncomeSources([...incomeSources, item]);
 					handleReloadOnCreate();
 				})
@@ -68,159 +68,104 @@ export const Summary = (props: any) => {
 		},
 	});
 
+	// Sets state if cookie is present
 	useEffect(() => {
 		if (Cookies.get("summary") !== undefined) {
+			
 			setValues(JSON.parse(Cookies.get("summary")!).values)
 			setIncomeSources(JSON.parse(Cookies.get("summary")!).incomeSources)
 			setTotalWorth(JSON.parse(Cookies.get("summary")!).totalWorth)
+			setTransactions(JSON.parse(Cookies.get("summary")!).transactions)
+
 		}
-		 else {
-			console.log("yo");
-			
-		 }
 	}, [])
 
+	// Fetches data from backend if cookie isn't present
 	useEffect(() => {
-		// TODO TEST PARAMETERS FOR USE EFFECT RELOAD
+		// if (incomeSources.length !== 0) {
+		if (isRetrieved) {
+			console.log("Setting cookies");
 
-		if (incomeSources.length !== 0) {
-			console.log("hello");
-			Cookies.set("summary", JSON.stringify({values: values, incomeSources: incomeSources, totalWorth: totalWorth}))
+			Cookies.set("summary", JSON.stringify({values: values, incomeSources: incomeSources, totalWorth: totalWorth, transactions: transactions}))
+			// Cookies.set("transaction", JSON.stringify({transactions: transactions}))
 			
 		}
 		if (Cookies.get("summary") === undefined) {
-			getCurrentUser()
-				.then((user: any) => {
-					getAllBudgets()
-						.then((budgets: any) => {
-							setValues({
-								...values,
-								firstName: user.firstName,
-								budgets: budgets.budgets,
-								totalAccountBalance: budgets.totalBalance,
-							})
-						})
-						.catch((err: any) => {
-							console.log(err);
-						});
-					createLinkToken()
-						.then((token: any) => {
-							
-							setLinkToken(token.link_token);
-						})
-						.catch((error: any) => {
-							console.log(error);
-						});
+			fetchData()
+		}
 
-					getAllIncomeSources()
-						.then((incomeSources: any) => {
-							// console.log(incomeSources);
+	// }, [values.reload, incomeSources]);
+	}, [values.reload, isRetrieved]);
 
-							setIncomeSources(incomeSources.incomeSources);
-							setTotalWorth(incomeSources.total);
-						})
-						.catch((error: any) => {
-							console.log(error);
-						});
-					getAllTransactions()
-						.then((transactions: any) => {
-							// console.log("retrieving transactions...");
-							// console.log(transactions);
 
-						})
-						.catch((error: any) => {
-							console.log(error);
-						});
+	const fetchData = () => {
+		getCurrentUser()
+		.then((user: any) => {
+			getAllBudgets()
+				.then((budgets: any) => {
+					setValues({
+						...values,
+						firstName: user.firstName,
+						budgets: budgets.budgets,
+						totalAccountBalance: budgets.totalBalance,
+					})
+				})
+				.catch((err: any) => {
+					console.log(err);
+				});
+			createLinkToken()
+				.then((token: any) => {
+					
+					setLinkToken(token.link_token);
 				})
 				.catch((error: any) => {
-					navigate("/");
 					console.log(error);
 				});
-		} else {
-			// setValues(JSON.parse(Cookies.get("summary")!).values)
-			// setIncomeSources(JSON.parse(Cookies.get("summary")!).incomeSources)
-			// setTotalWorth(JSON.parse(Cookies.get("summary")!).totalWorth)
 
-			// console.log(JSON.parse(Cookies.get("summary")!));
-			// JSON.parse(Cookies.get("summary"))
-		}
-	}, [values.reload, incomeSources]);
-		// TODO TEST PARAMETERS FOR USE EFFECT RELOAD
-
-
-		
-	// * ORIGINAL COPY OF USEEFFECT BELOW
-	// useEffect(() => {
-
-	// 	if (Cookies.get("summary") === undefined) {
-	// 		getCurrentUser()
-	// 			.then((user: any) => {
-	// 				getAllBudgets()
-	// 					.then((budgets: any) => {
-	// 						setValues({
-	// 							...values,
-	// 							firstName: user.firstName,
-	// 							budgets: budgets.budgets,
-	// 							totalAccountBalance: budgets.totalBalance,
-	// 						})
-	// 					})
-	// 					.catch((err: any) => {
-	// 						console.log(err);
-	// 					});
-	// 				createLinkToken()
-	// 					.then((token: any) => {
-							
-	// 						setLinkToken(token.link_token);
-	// 					})
-	// 					.catch((error: any) => {
-	// 						console.log(error);
-	// 					});
-
-	// 				getAllIncomeSources()
-	// 					.then((incomeSources: any) => {
-	// 						// console.log(incomeSources);
-
-	// 						setIncomeSources(incomeSources.incomeSources);
-	// 						setTotalWorth(incomeSources.total);
-	// 					})
-	// 					.catch((error: any) => {
-	// 						console.log(error);
-	// 					});
-	// 				getAllTransactions()
-	// 					.then((transactions: any) => {
-	// 						// console.log("retrieving transactions...");
-	// 						// console.log(transactions);
-
-	// 					})
-	// 					.catch((error: any) => {
-	// 						console.log(error);
-	// 					});
-	// 			})
-	// 			.catch((error: any) => {
-	// 				navigate("/");
-	// 				console.log(error);
-	// 			});
-	// 	} else {
-	// 		// setValues(Cookies.get("summary"))
-	// 		// console.log(JSON.parse(Cookies.get("summary")!));
-	// 		// JSON.parse(Cookies.get("summary"))
-	// 	}
-	// }, [values.reload]);
-
+			getAllIncomeSources()
+				.then((incomeSources: any) => {
+					setIncomeSources(incomeSources.incomeSources);
+					setTotalWorth(incomeSources.total);
+				})
+				.catch((error: any) => {
+					console.log(error);
+				});
+			getAllTransactions()
+				.then((transactions: any) => {
+					setTransactions(transactions[0])
+				})
+				.catch((error: any) => {
+					console.log(error);
+				});
+		})
+		.catch((error: any) => {
+			navigate("/");
+			console.log(error);
+		});
+	}
 
 	const handleReloadOnCreate = () => {
 		setValues({ ...values, reload: !values.reload });
+		Cookies.remove("summary")
+		fetchData()
+
 	};
 
 	return (
 		<>
-			<h1>Welcome, {values.firstName}</h1>
+			<Box
+				sx={{
+					display: "flex",
+					justifyContent: "space-between",
+				}}
+			>
+				<h1>Welcome, {values.firstName}</h1>
+				<Button onClick={handleReloadOnCreate}>Refresh Data</Button>
+			</Box>
 			{/* Flex container */}
 			<Box
 				sx={{
 					display: "flex",
-					border: 1,
-					// justifyContent: "space-between",
 				}}
 			>
 				{/* Left side bar */}
@@ -246,21 +191,19 @@ export const Summary = (props: any) => {
 						return (
 							<div>
 								<div>
-									{/* {JSON.stringify(incomeSource)} */}
 									<br />
 									{incomeSource.map((source: any) => {
 										return (
 											<div>
-												{/* {source.balances.current ? source.balances.current : "no"} */}
+
 												{source.name}:
 												{source.balances ? source.balances.current : null}
-												{/* {JSON.stringify(source)} */}
+
 											</div>
 										);
 									})}
 									**********************
 								</div>
-								{/* {totalWorth} */}
 								<Button onClick={() => open()}>link bank account</Button>
 							</div>
 						);
@@ -272,7 +215,6 @@ export const Summary = (props: any) => {
 						display: "flex",
 						flexDirection: "column",
 						flexWrap: "wrap",
-						border: 1,
 						borderRadius: 1,
 						flex: 3,
 						ml: 16,
@@ -338,7 +280,8 @@ export const Summary = (props: any) => {
 							}}
 						>
 							<h1>Transactions</h1>
-							{/* <TransactionTable data={incomeSources}></TransactionTable> */}
+							<TransactionTable data={transactions}></TransactionTable>
+							
 						</Box>
 						<Box
 							sx={{
