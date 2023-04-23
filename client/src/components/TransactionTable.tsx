@@ -1,4 +1,5 @@
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DATA_GRID_PROPS_DEFAULT_VALUES, DataGrid, GridColDef } from "@mui/x-data-grid";
+import { useState, useEffect } from "react";
 
 const columns: GridColDef[] = [
 	{
@@ -20,12 +21,15 @@ const columns: GridColDef[] = [
 ];
 
 export const TransactionTable = (props: any) => {
-	const rows = props.data.map((item: any, index: any) => ({
-		id: index + 1,
-		name: item.name,
-		amount: item.amount,
-		date: item.date,
-	}));
+	// const [rows, setRows] = useState(null);
+
+		const rows = props.data?.map((item: any, index: any) => ({
+			id: index + 1,
+			name: item.name,
+			amount: item.amount,
+			date: item.date,
+		}));
+
 
 	return (
 		<div style={{ height: 400, width: "100%" }}>

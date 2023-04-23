@@ -72,31 +72,43 @@ export const Summary = (props: any) => {
 	useEffect(() => {
 		if (Cookies.get("summary") !== undefined) {
 			
+			retrieveTransactions()
 			setValues(JSON.parse(Cookies.get("summary")!).values)
 			setIncomeSources(JSON.parse(Cookies.get("summary")!).incomeSources)
 			setTotalWorth(JSON.parse(Cookies.get("summary")!).totalWorth)
-			setTransactions(JSON.parse(Cookies.get("summary")!).transactions)
 
 		}
 	}, [])
 
 	// Fetches data from backend if cookie isn't present
 	useEffect(() => {
-		// if (incomeSources.length !== 0) {
+		// if (incomeSources.length !== 0 || isRetrieved) {
 		if (isRetrieved) {
+			retrieveTransactions()
 			console.log("Setting cookies");
-
-			Cookies.set("summary", JSON.stringify({values: values, incomeSources: incomeSources, totalWorth: totalWorth, transactions: transactions}))
-			// Cookies.set("transaction", JSON.stringify({transactions: transactions}))
+			Cookies.set("summary", JSON.stringify({values: values, incomeSources: incomeSources, totalWorth: totalWorth}))
+		
 			
 		}
 		if (Cookies.get("summary") === undefined) {
+			retrieveTransactions()
 			fetchData()
+
 		}
 
 	// }, [values.reload, incomeSources]);
 	}, [values.reload, isRetrieved]);
 
+
+	const retrieveTransactions = () => {
+		getAllTransactions()
+		.then((transactions: any) => {
+			setTransactions(transactions[0])
+		})
+		.catch((error: any) => {
+			console.log(error);
+		});
+	}
 
 	const fetchData = () => {
 		getCurrentUser()
@@ -122,10 +134,15 @@ export const Summary = (props: any) => {
 					console.log(error);
 				});
 
+				// !This function gives me aids
 			getAllIncomeSources()
 				.then((incomeSources: any) => {
 					setIncomeSources(incomeSources.incomeSources);
 					setTotalWorth(incomeSources.total);
+					
+				})
+				.then(() => {
+					setIsRetrieved(true);
 				})
 				.catch((error: any) => {
 					console.log(error);
@@ -133,6 +150,7 @@ export const Summary = (props: any) => {
 			getAllTransactions()
 				.then((transactions: any) => {
 					setTransactions(transactions[0])
+					
 				})
 				.catch((error: any) => {
 					console.log(error);
@@ -147,7 +165,7 @@ export const Summary = (props: any) => {
 	const handleReloadOnCreate = () => {
 		setValues({ ...values, reload: !values.reload });
 		Cookies.remove("summary")
-		fetchData()
+		setIsRetrieved(false)
 
 	};
 

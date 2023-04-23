@@ -56,6 +56,8 @@ const createLinkToken = async () => {
 	return tokenResponse.data;
 };
 
+
+// Called from 
 const setAccessToken = async (publicToken: any, userId: string) => {
 	
 	const tokenResponse = await client.itemPublicTokenExchange({
@@ -79,6 +81,18 @@ const setAccessToken = async (publicToken: any, userId: string) => {
 
 };
 
+// Helper method to grab institution name and icon from plaid
+const retrieveInstitution = async (accessToken: any) => {
+	// console.log(accessToken);
+	
+	const item = await client.itemGet({access_token: accessToken});
+	console.log(item);
+	
+
+	// const institutionResponse = await client.institutionsGetById(itemId);
+	
+}
+
 
 // called from incomeService.ts to retrieve account info via access token
 const retrieveBankInformation = async (x: any) => {
@@ -88,6 +102,8 @@ const retrieveBankInformation = async (x: any) => {
 
 		for (let i = 0; i < x.length; i++) {
 			const bankAccount = await client.accountsBalanceGet({access_token: x[i].accessToken})	
+			// console.log(retrieveInstitution(x[i].accessToken));
+			
 			bankList.push(bankAccount.data.accounts)
 		}
 		return bankList
@@ -121,5 +137,6 @@ module.exports = {
 	createLinkToken,
 	setAccessToken,
 	retrieveBankInformation,
+	retrieveInstitution,
 	retrieveTransactions
 };

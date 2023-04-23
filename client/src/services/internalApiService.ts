@@ -113,7 +113,6 @@ export const deleteBudgetItem = async (budgetItemId: number) => {
 
 export const getAllIncomeSources = async () => {
 	const res = await http.get("/incomeSources/");
-	console.log(res.data);
 
 	return res.data;
 };
@@ -122,7 +121,6 @@ export const getAllTransactions = async () => {
 	console.log("getting all transactions from internalapiservice");
 
 	const res = await http.get("/incomeSources/transactions");
-	console.log(res.data);
 
 	return res.data;
 };
