@@ -64,6 +64,8 @@ const setAccessToken = async (publicToken: any, userId: string) => {
 		public_token: publicToken.publicToken,
 	});
 
+	// retrieveInstitution(tokenResponse.data.access_token)
+
 	const data = {
 		accessToken: tokenResponse.data.access_token,
 		itemId: tokenResponse.data.item_id,
@@ -86,10 +88,20 @@ const retrieveInstitution = async (accessToken: any) => {
 	// console.log(accessToken);
 	
 	const item = await client.itemGet({access_token: accessToken});
-	console.log(item);
+	console.log(item.data.item.institution_id);
 	
 
-	// const institutionResponse = await client.institutionsGetById(itemId);
+	const institutionResponse = await client.institutionsGetById({institution_id: item.data.item.institution_id, country_codes: ["US"], options: {
+		include_optional_metadata: true
+	} 
+	});
+
+	
+
+	console.log(institutionResponse.data.institution.logo);
+	console.log(institutionResponse.data.institution.name);
+
+	
 	
 }
 
