@@ -64,12 +64,15 @@ const setAccessToken = async (publicToken: any, userId: string) => {
 		public_token: publicToken.publicToken,
 	});
 
-	// retrieveInstitution(tokenResponse.data.access_token)
+	const institutionData = await retrieveInstitution(tokenResponse.data.access_token)
 
 	const data = {
 		accessToken: tokenResponse.data.access_token,
 		itemId: tokenResponse.data.item_id,
-        userId: getSessionId(userId)
+        userId: getSessionId(userId),
+		institutionName: institutionData.name,
+		institutionLogo: institutionData.logo,
+		institutionUrl: institutionData.url
 	};
 
 	const incomeSource = await IncomeSource.create(data);
@@ -85,12 +88,9 @@ const setAccessToken = async (publicToken: any, userId: string) => {
 
 // Helper method to grab institution name and icon from plaid
 const retrieveInstitution = async (accessToken: any) => {
-	// console.log(accessToken);
 	
 	const item = await client.itemGet({access_token: accessToken});
-	console.log(item.data.item.institution_id);
 	
-
 	const institutionResponse = await client.institutionsGetById({institution_id: item.data.item.institution_id, country_codes: ["US"], options: {
 		include_optional_metadata: true
 	} 
@@ -98,23 +98,26 @@ const retrieveInstitution = async (accessToken: any) => {
 
 	
 
-	console.log(institutionResponse.data.institution.logo);
-	console.log(institutionResponse.data.institution.name);
+	// console.log(institutionResponse.data.institution.logo);
+	console.log(institutionResponse.data.institution);
+	
+	// console.log(institutionResponse.data.institution.name);
+	// console.log(institutionResponse.data.institution.url);
 
+	return institutionResponse.data.institution
 	
 	
 }
 
 
 // called from incomeService.ts to retrieve account info via access token
-const retrieveBankInformation = async (x: any) => {
+const retrieveBankInformation = async (accessTokens: any) => {
 	let bankList = []
 	
 	try {
 
-		for (let i = 0; i < x.length; i++) {
-			const bankAccount = await client.accountsBalanceGet({access_token: x[i].accessToken})	
-			// console.log(retrieveInstitution(x[i].accessToken));
+		for (let i = 0; i < accessTokens.length; i++) {
+			const bankAccount = await client.accountsBalanceGet({access_token: accessTokens[i].accessToken})	
 			
 			bankList.push(bankAccount.data.accounts)
 		}

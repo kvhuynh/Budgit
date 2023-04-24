@@ -222,10 +222,10 @@ export const Summary = (props: any) => {
 									})}
 									**********************
 								</div>
-								<Button onClick={() => open()}>link bank account</Button>
 							</div>
 						);
 					})}
+					<Button onClick={() => open()}>link bank account</Button>
 				</Box>
 				{/* Right side */}
 				<Box

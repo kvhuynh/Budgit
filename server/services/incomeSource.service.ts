@@ -46,12 +46,7 @@ const getTransactions = async (userToken: string) => {
 	const accessToken = accessIncomeSources[0].accessToken;
 	
 	retrieveInstitution(accessToken)
-	
-	
-	// console.log(incomeSources.accessToken);
-	
-	
-    
+	    
 	return transactions;
 };
 
