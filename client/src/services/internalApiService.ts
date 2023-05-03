@@ -69,7 +69,7 @@ export const createBudgetItem = async (
 	budgetId: number
 ) => {
 	console.log(budgetItemData);
-	
+
 	const res = await http.post(`/budgetItems/${budgetId}/new`, budgetItemData);
 
 	return res.data;
@@ -77,39 +77,50 @@ export const createBudgetItem = async (
 
 export const getAllBudgetItemsByBudget = async (budget: any) => {
 	try {
-
 		const res = await http.get(`/budgetItems/${budget.id}`);
 		console.log(res.data);
-		
+
 		return res.data;
-	} catch {
-		
-	}
-	
+	} catch {}
 };
 
 export const getOneBudgetItem = async (budgetItemId: any) => {
 	console.log(budgetItemId);
-	
+
 	const res = await http.get(`/budgetItems/${budgetItemId}/single`);
 
 	return res.data;
-}
+};
 
 export const updateBudgetItem = async (budgetItemData: any) => {
-	const res = await http.put(`/budgetItems/${budgetItemData.id}/update`, budgetItemData);
+	const res = await http.put(
+		`/budgetItems/${budgetItemData.id}/update`,
+		budgetItemData
+	);
 	console.log(res.data);
-	
-	return res.data;
 
+	return res.data;
 };
 
 export const deleteBudgetItem = async (budgetItemId: number) => {
+	console.log("deletingBudgetItem");
 
-    console.log("deletingBudgetItem");
-    
 	const res = await http.delete(`/budgetItems/${budgetItemId}/delete`);
-    console.log(res.data);
-    
+	console.log(res.data);
+
+	return res.data;
+};
+
+export const getAllIncomeSources = async () => {
+	const res = await http.get("/incomeSources/");
+
+	return res.data;
+};
+
+export const getAllTransactions = async () => {
+	console.log("getting all transactions from internalapiservice");
+
+	const res = await http.get("/incomeSources/transactions");
+
 	return res.data;
 };

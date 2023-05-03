@@ -4,6 +4,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { User } from "../models/user.model"
 import { Budget } from "../models/budget.model"
 import { BudgetItem } from "../models/budgetItem.model"
+import { IncomeSource } from "../models/incomeSource.model"
 
 const sequelize = new Sequelize(
     
@@ -21,6 +22,6 @@ const sequelize = new Sequelize(
 
 );
 
-sequelize.addModels([User, Budget, BudgetItem])
+sequelize.addModels([User, Budget, BudgetItem, IncomeSource])
 
 module.exports = sequelize;

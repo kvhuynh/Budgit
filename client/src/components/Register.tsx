@@ -101,7 +101,7 @@ const Register = () => {
 						handleSetErrors(errorKey, user.errors[i].message);
 					}
 				} else {
-					navigate("/dashboard");
+					navigate("/summary");
 				}
 			})
 			.catch((err: any) => {
