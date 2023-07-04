@@ -29,11 +29,6 @@ const initialState = {
 export const Login = () => {
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     console.log(values);
-        
-    // })
-
     const [values, setValues] = useState<State>(initialState);
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

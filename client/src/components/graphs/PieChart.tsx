@@ -19,10 +19,7 @@ export const PieChart = (props: any) => {
         
         // TODO use spread operator to spread in old values before adding new one use filter
         setChartData(newArr)
-        // console.log([...chartData, newArr]);
-        
-        // setChartData([...chartData, newArr])
-            
+
         
     }, [props])
 
@@ -42,14 +39,6 @@ export const PieChart = (props: any) => {
 			{
 				type: "pie",
                 data: chartData,
-				// data: props.data,
-                // data: [
-                //     { value: 1048, name: 'Search Engine' },
-                //     { value: 735, name: 'Direct' },
-                //     { value: 580, name: 'Email' },
-                //     { value: 484, name: 'Union Ads' },
-                //     { value: 300, name: 'Video Ads' }
-                //   ],
 				radius: ["40%", "70%"],
 			},
 		],

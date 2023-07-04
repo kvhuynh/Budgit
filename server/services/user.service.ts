@@ -12,18 +12,9 @@ const createUser = async (data: any, res: any) => {
 	const user = await User.create(data)
 		.then((user: any) => {
 			// TODO user should have a user type
-			// const userToken = jwt.sign({
-			//     id: user._id,
-			// }, process.env.SECRET_KEY);
-
-			// res
-			//     .cookie("usertoken", userToken, secret, {
-			//         httpOnly: true
-			//     })
-			//     .json({ msg: "success", user: user });
 			const userToken = jwt.sign(
 				{
-					id: user.id, // id: user._id
+					id: user.id, 
 				},
 				process.env.SECRET_KEY
 			);
@@ -59,7 +50,6 @@ const loginUser = async (data: any, res: any) => {
 	const userToken = jwt.sign(
 		{
 			id: user.id,
-			// id: user._id sdfjsdlfk jsdlkfjsdlfksdjf
 		},
 		process.env.SECRET_KEY
 	);

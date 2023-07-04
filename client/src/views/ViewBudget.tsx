@@ -289,7 +289,6 @@ export const ViewBudget = (props: any) => {
 															);
 													  })
 													: "no entry data available"}
-												{/* <Typography sx={{ p: 1 }}></Typography> */}
 											</Popover>
 										</div>
 									);

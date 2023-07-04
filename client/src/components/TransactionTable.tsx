@@ -21,7 +21,7 @@ const columns: GridColDef[] = [
 ];
 
 export const TransactionTable = (props: any) => {
-	// const [rows, setRows] = useState(null);
+		console.log(props)
 
 		const rows = props.data?.map((item: any, index: any) => ({
 			id: index + 1,

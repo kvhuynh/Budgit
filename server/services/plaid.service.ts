@@ -15,8 +15,8 @@ const {
 // const APP_PORT = process.env.APP_PORT || 8000;
 const PLAID_CLIENT_ID = process.env.PLAID_CLIENT_ID;
 const PLAID_SECRET = process.env.PLAID_SECRET;
-// const PLAID_ENV = process.env.PLAID_ENV || "sandbox";
-const PLAID_ENV = process.env.PLAID_ENV || "development";
+const PLAID_ENV = process.env.PLAID_ENV || "sandbox";
+// const PLAID_ENV = process.env.PLAID_ENV || "development";
 
 // const PLAID_ENV = process.env.PLAID_ENV;
 
@@ -46,7 +46,6 @@ const basicLinkTokenObject = {
 };
 
 const createLinkToken = async () => {
-	
 	const linkTokenObject = {
 		...basicLinkTokenObject,
 		products: ["transactions"],
@@ -79,7 +78,7 @@ const setAccessToken = async (publicToken: any, userId: string) => {
 	
 	const test = await retrieveBankInformation([{accessToken: data.accessToken}])
 	
-	console.log(test);
+	// console.log(test);
 	
 	
 	return test
@@ -95,14 +94,6 @@ const retrieveInstitution = async (accessToken: any) => {
 		include_optional_metadata: true
 	} 
 	});
-
-	
-
-	// console.log(institutionResponse.data.institution.logo);
-	console.log(institutionResponse.data.institution);
-	
-	// console.log(institutionResponse.data.institution.name);
-	// console.log(institutionResponse.data.institution.url);
 
 	return institutionResponse.data.institution
 	

@@ -4,8 +4,8 @@ import { Budget } from "../models/budget.model";
 const { getSessionId } = require("../utilities/getSessionId.utilities");
 
 const getAllBudgetItems = async (userId: string, budgetId: number) => {	
-	// get sum of all budgetItems and update the budget they are associated with
 
+	// get sum of all budgetItems and update the budget they are associated with
     const sessionId = getSessionId(userId);
 	
 	let expenseSum = 0;
@@ -14,7 +14,7 @@ const getAllBudgetItems = async (userId: string, budgetId: number) => {
 	const budget = await Budget.findOne({ where: { id: budgetId } })	
 	
 	const budgetItems = await BudgetItem.findAll({
-		where: { budget_id: budgetId, type: "budget item" },
+		where: { budget_id: budgetId, type: "expense" },
 	});
 
 	const incomeItems = await BudgetItem.findAll({
@@ -71,12 +71,7 @@ const updateBudgetItem = async (id: number, data: any) => {
 	const currentItem = await BudgetItem.findOne({ where:{ id: data.budgetItemId } })
 	
 
-	if (data.amount === 0) {
-		console.log("user entered 0");
-		
-		// return {invalidAmountError: "please enter a non 0 amount"}
-		// throw new Error({invalidAmountError: "please enter a non 0 value"})
-		// throw new Error("Please enter a non 0 value")
+	if (data.amount === 0) {	
 		throw {
 			invalidAmounterror: "Please enter a non 0 value"
 		}
@@ -92,21 +87,18 @@ const updateBudgetItem = async (id: number, data: any) => {
 		newHistory.push(addingHistory)
 		
 	} else {
-		console.log("no");
+		console.log("no value given");
 		
 	}
 	
 	const updatedBudgetItem = await BudgetItem.increment({ value: data.amount }, { where:{ id: data.budgetItemId } })
 		.then(() => {
-			// console.log(history);
-			
-			// BudgetItem.update({ history: '[["2022-12-13","1"]]' }, { where: { id: data.budgetItemId }, individualHooks: true })
+
 			BudgetItem.update({ history: JSON.stringify(newHistory) }, { where: { id: data.budgetItemId }, individualHooks: true })
 		})
 
 
 	return updatedBudgetItem;
-	// const budget = await Budget.update({ total_balance: data.newTotalBalance }, { where: { user_id: sessionId, name: budgetName } });
 };
 
 const deleteBudgetItem = async (budgetId: number) => {

@@ -48,7 +48,6 @@ export const Summary = (props: any) => {
 	const [values, setValues] = useState<State>(initialState);
 	const navigate = useNavigate();
 	const [linkToken, setLinkToken] = useState(null);
-	// const [incomeSources, setIncomeSources] = useState([]);
 	const [incomeSources, setIncomeSources] = useState<any>([]);
 	const [totalWorth, setTotalWorth] = useState<number>(0);
 	const [transactions, setTransactions] = useState<any>([]);
@@ -68,35 +67,9 @@ export const Summary = (props: any) => {
 		},
 	});
 
-	// Sets state if cookie is present
 	useEffect(() => {
-		if (Cookies.get("summary") !== undefined) {
-			
-			retrieveTransactions()
-			setValues(JSON.parse(Cookies.get("summary")!).values)
-			setIncomeSources(JSON.parse(Cookies.get("summary")!).incomeSources)
-			setTotalWorth(JSON.parse(Cookies.get("summary")!).totalWorth)
-
-		}
-	}, [])
-
-	// Fetches data from backend if cookie isn't present
-	useEffect(() => {
-		// if (incomeSources.length !== 0 || isRetrieved) {
-		if (isRetrieved) {
-			retrieveTransactions()
-			console.log("Setting cookies");
-			Cookies.set("summary", JSON.stringify({values: values, incomeSources: incomeSources, totalWorth: totalWorth}))
-		
-			
-		}
-		if (Cookies.get("summary") === undefined) {
 			retrieveTransactions()
 			fetchData()
-
-		}
-
-	// }, [values.reload, incomeSources]);
 	}, [values.reload, isRetrieved]);
 
 
@@ -127,14 +100,13 @@ export const Summary = (props: any) => {
 				});
 			createLinkToken()
 				.then((token: any) => {
-					
+					console.log("do we get here")
 					setLinkToken(token.link_token);
 				})
 				.catch((error: any) => {
 					console.log(error);
 				});
 
-				// !This function gives me aids
 			getAllIncomeSources()
 				.then((incomeSources: any) => {
 					setIncomeSources(incomeSources.incomeSources);
@@ -196,12 +168,16 @@ export const Summary = (props: any) => {
 						flex: 1,
 					}}
 				>
+					<Box>
 					<h1>Accounts:</h1>
+					<Button onClick={() => open()}>link bank account</Button>
+					</Box>
 					{incomeSources.length !== 0 ? (
 						<PieChart totalWorth={totalWorth} data={incomeSources}></PieChart>
 					) : (
 						<Box sx={{ display: "flex", justifyContent: "center" }}>
-							<CircularProgress />
+							{/* <CircularProgress /> */}
+							<div>No data found</div>
 						</Box>
 					)}
 
@@ -225,7 +201,6 @@ export const Summary = (props: any) => {
 							</div>
 						);
 					})}
-					<Button onClick={() => open()}>link bank account</Button>
 				</Box>
 				{/* Right side */}
 				<Box
