@@ -268,7 +268,6 @@ export const Summary = (props: any) => {
 							sx={{
 								border: 1,
 								borderRadius: 1,
-
 								mb: 10,
 							}}
 						>
@@ -280,7 +279,6 @@ export const Summary = (props: any) => {
 							sx={{
 								border: 1,
 								borderRadius: 1,
-
 								mb: 10,
 							}}
 						>

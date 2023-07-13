@@ -1,4 +1,4 @@
-import Grid from '@mui/material/Grid'; // Grid version 1
+// import Grid from '@mui/material/Grid'; // Grid version 1
 import Login from "../components/Login";
 import Register from "../components/Register";
 
@@ -14,7 +14,6 @@ export const LoginRegister = (props: any) => {
     useEffect(() => {
         getCurrentUser()
             .then((user: any) => {
-
                 navigate("/summary")
             })
     })
@@ -28,3 +27,4 @@ export const LoginRegister = (props: any) => {
 }
 
 export default LoginRegister;
+

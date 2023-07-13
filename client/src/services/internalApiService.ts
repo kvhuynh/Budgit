@@ -7,6 +7,9 @@ const http = axios.create({
 
 // User operations
 export const createUser = async (potentialUser: Object) => {
+
+	console.log(potentialUser);
+
 	const res = await http.post("/users/register", potentialUser);
 	return res.data;
 };

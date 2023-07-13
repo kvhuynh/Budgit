@@ -1,6 +1,6 @@
 {
     "host": "localhost", 
-    "user": "root",
+    "user": "rootroot",
     "database": "budgit-db",
     "password": "root"
 }
