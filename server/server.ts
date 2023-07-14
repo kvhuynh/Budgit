@@ -8,6 +8,7 @@ const { budgetRouter } = require("./routes/budget.routes");
 const { budgetItemRouter } = require("./routes/budgetItem.routes");
 const { incomeSourceRouter } = require("./routes/incomeSource.routes")
 const { plaidRouter } = require("./routes/plaid.routes")
+const { googleRouter } = require("./routes/google.routes")
 
 const cookieParser = require("cookie-parser");
 
@@ -29,6 +30,7 @@ app.use("/api/budgets/", budgetRouter);
 app.use("/api/budgetItems/", budgetItemRouter);
 app.use("/api/incomeSources/", incomeSourceRouter)
 app.use("/api/plaid/", plaidRouter)
+app.use("/api/googleAuth/", googleRouter)
 
 
 app.listen(port, () => {

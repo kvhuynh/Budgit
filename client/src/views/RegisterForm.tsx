@@ -87,11 +87,13 @@ const RegisterForm: React.FC = () => {
 						} else {
 							navigate("/summary");
 						}
+				setSubmitting(false);
+
 					})
 					.catch((err: any) => {
 						console.log(err);
 					});
-			}, 2000);
+			}, 1000);
 		},
 	});
 
@@ -99,7 +101,7 @@ const RegisterForm: React.FC = () => {
 		console.log(values);
 	};
 
-	const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
+	const { errors, touched, handleSubmit, isSubmitting, setSubmitting, getFieldProps } = formik;
 
 	return (
 		<FormikProvider value={formik}>
@@ -295,7 +297,7 @@ const RegisterForm: React.FC = () => {
 							size="large"
 							type="submit"
 							variant="contained"
-							// loading={isSubmitting}
+							loading={isSubmitting}
 						>
 							Sign up
 						</LoadingButton>

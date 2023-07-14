@@ -33,25 +33,22 @@ const animate = {
 interface UserState {
 	email: string;
 	password: string;
-    remember: boolean;
+	remember: boolean;
 }
 
 interface ErrorState {
-	emailError: string;
-	passwordError: string;
+    validationError: string;
 }
 
 const initialErrorState = {
-	emailError: "",
-	passwordError: "",
+    validationError: ""
 };
+
 
 export const LoginForm = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
-    const [error, setError] = useState<ErrorState>(initialErrorState);
-	//   const from = location.state?.from?.pathname || "/";
-
+	const [error, setError] = useState<ErrorState>(initialErrorState);
 	const [showPassword, setShowPassword] = useState(false);
 
 	const formik = useFormik({
@@ -60,32 +57,43 @@ export const LoginForm = () => {
 			password: "",
 			remember: true,
 		},
-		onSubmit: (values: UserState) => {
+		onSubmit: (values: UserState, actions) => {
 			setTimeout(() => {
-                loginUser(values)
+				loginUser(values)
                     .then((user: any) => {
-						setError(initialErrorState);
-						if (user.errors !== undefined) {
+					    setError(initialErrorState);
+					    if (user.errors !== undefined) {
+						    for (let i = 0; i < user.errors.length; i++) {
+							    const errorKey = user.errors[i].path + "Error";
+							    setError((error: ErrorState) => ({
+								    ...error,
+								    [errorKey]: user.errors[i].message,
+							    }));
+							    console.log(user.errors[i].message);
+						    }
+					    } else {
+						    navigate("/summary");
+					    }
+				})
+                .catch((error: any) => {
+                setError({validationError: "Invalid credentials"})
 
-							for (let i = 0; i < user.errors.length; i++) {
-								const errorKey = user.errors[i].path + "Error";
-								setError((error: ErrorState) => ({
-									...error,
-									[errorKey]: user.errors[i].message,
-								}));
-								console.log(user.errors[i].message);
-							}
-						} else {
-							navigate("/summary");
-						}
-                    })
-				navigate("/summary");
-			}, 2000);
+                    console.log(error)
+                });
+				setSubmitting(false);
+			}, 1000);
 		},
 	});
 
-	const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } =
-		formik;
+	const {
+		errors,
+		touched,
+		values,
+		isSubmitting,
+		handleSubmit,
+		getFieldProps,
+		setSubmitting,
+	} = formik;
 
 	return (
 		<FormikProvider value={formik}>
@@ -108,13 +116,12 @@ export const LoginForm = () => {
 						initial={{ opacity: 0, y: 40 }}
 						animate={animate}
 					>
-						{error.emailError ? (
+						{error.validationError ? (
 							<TextField
 								error
 								fullWidth
 								label="Email address"
 								{...getFieldProps("email")}
-								helperText={error.emailError}
 							/>
 						) : (
 							<TextField
@@ -126,7 +133,7 @@ export const LoginForm = () => {
 							/>
 						)}
 
-{error.passwordError ? (
+						{error.validationError ? (
 							<TextField
 								error
 								fullWidth
@@ -134,7 +141,7 @@ export const LoginForm = () => {
 								type={showPassword ? "text" : "password"}
 								label="Password"
 								{...getFieldProps("password")}
-                                helperText={error.passwordError}
+								helperText={error.validationError}
 								InputProps={{
 									endAdornment: (
 										<InputAdornment position="end">
@@ -161,7 +168,6 @@ export const LoginForm = () => {
 								type={showPassword ? "text" : "password"}
 								label="Password"
 								{...getFieldProps("password")}
-
 								InputProps={{
 									endAdornment: (
 										<InputAdornment position="end">
