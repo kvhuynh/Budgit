@@ -57,9 +57,9 @@ const loginUser = async (data: any, res: any) => {
 	res
 		.cookie("usertoken", userToken, secret, {
 			httpOnly: true,
+			// secure: false
 		})
 		.json({ msg: "success!" });
-	console.log(userToken);
 };
 
 const logoutUser = async (res: any) => {
@@ -68,9 +68,13 @@ const logoutUser = async (res: any) => {
 };
 
 const getCurrentUser = async (res: any) => {
+	// console.log("getCurrentUserBackend");
+	// console.log(res);
+	
 	const id = getSessionId(res.usertoken);
 	const user = await User.findOne({ where: { id: id } });
-
+	// console.log(user);
+	
 	return user;
 };
 

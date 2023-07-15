@@ -53,6 +53,9 @@ export const Summary = (props: any) => {
 	const [transactions, setTransactions] = useState<any>([]);
 	const [isRetrieved, setIsRetrieved] = useState(false);
 
+	const [loggedIn, setLoggedIn] = useState(false);
+
+
 	const { open, ready } = usePlaidLink({
 		token: linkToken,
 		onSuccess: (publicToken, metadata) => {
@@ -67,10 +70,10 @@ export const Summary = (props: any) => {
 		},
 	});
 
-	useEffect(() => {
-			retrieveTransactions()
-			fetchData()
-	}, [values.reload, isRetrieved]);
+	// useEffect(() => {
+	// 		retrieveTransactions()
+	// 		fetchData()
+	// }, [values.reload, isRetrieved]);
 
 
 	const retrieveTransactions = () => {
@@ -83,56 +86,56 @@ export const Summary = (props: any) => {
 		});
 	}
 
-	const fetchData = () => {
-		getCurrentUser()
-		.then((user: any) => {
-			getAllBudgets()
-				.then((budgets: any) => {
-					setValues({
-						...values,
-						firstName: user.firstName,
-						budgets: budgets.budgets,
-						totalAccountBalance: budgets.totalBalance,
-					})
-				})
-				.catch((err: any) => {
-					console.log(err);
-				});
-			createLinkToken()
-				.then((token: any) => {
-					console.log("do we get here")
-					setLinkToken(token.link_token);
-				})
-				.catch((error: any) => {
-					console.log(error);
-				});
+	// const fetchData = () => {
+	// 	getCurrentUser()
+	// 	.then((user: any) => {
+	// 		getAllBudgets()
+	// 			.then((budgets: any) => {
+	// 				setValues({
+	// 					...values,
+	// 					firstName: user.firstName,
+	// 					budgets: budgets.budgets,
+	// 					totalAccountBalance: budgets.totalBalance,
+	// 				})
+	// 			})
+	// 			.catch((err: any) => {
+	// 				console.log(err);
+	// 			});
+	// 		createLinkToken()
+	// 			.then((token: any) => {
+	// 				console.log("do we get here")
+	// 				setLinkToken(token.link_token);
+	// 			})
+	// 			.catch((error: any) => {
+	// 				console.log(error);
+	// 			});
 
-			getAllIncomeSources()
-				.then((incomeSources: any) => {
-					setIncomeSources(incomeSources.incomeSources);
-					setTotalWorth(incomeSources.total);
+	// 		getAllIncomeSources()
+	// 			.then((incomeSources: any) => {
+	// 				setIncomeSources(incomeSources.incomeSources);
+	// 				setTotalWorth(incomeSources.total);
 					
-				})
-				.then(() => {
-					setIsRetrieved(true);
-				})
-				.catch((error: any) => {
-					console.log(error);
-				});
-			getAllTransactions()
-				.then((transactions: any) => {
-					setTransactions(transactions[0])
+	// 			})
+	// 			.then(() => {
+	// 				setIsRetrieved(true);
+	// 			})
+	// 			.catch((error: any) => {
+	// 				console.log(error);
+	// 			});
+	// 		getAllTransactions()
+	// 			.then((transactions: any) => {
+	// 				setTransactions(transactions[0])
 					
-				})
-				.catch((error: any) => {
-					console.log(error);
-				});
-		})
-		.catch((error: any) => {
-			navigate("/");
-			console.log(error);
-		});
-	}
+	// 			})
+	// 			.catch((error: any) => {
+	// 				console.log(error);
+	// 			});
+	// 	})
+	// 	.catch((error: any) => {
+	// 		navigate("/");
+	// 		console.log(error);
+	// 	});
+	// }
 
 	const handleReloadOnCreate = () => {
 		setValues({ ...values, reload: !values.reload });
@@ -141,9 +144,17 @@ export const Summary = (props: any) => {
 
 	};
 
+	const handleOnClick = () => {
+		logoutUser().then((user: any) => {
+			setLoggedIn(false);
+			navigate("/");
+		});
+	};
+
 	return (
 		<>
-			<Box
+		<Button onClick={handleOnClick}>sdfsdf</Button>
+			{/* <Box
 				sx={{
 					display: "flex",
 					justifyContent: "space-between",
@@ -153,13 +164,13 @@ export const Summary = (props: any) => {
 				<Button onClick={handleReloadOnCreate}>Refresh Data</Button>
 			</Box>
 			{/* Flex container */}
-			<Box
+			{/* <Box
 				sx={{
 					display: "flex",
 				}}
-			>
+			> */}
 				{/* Left side bar */}
-				<Box
+				{/* <Box
 					sx={{
 						display: "flex",
 						flexDirection: "column",
@@ -175,9 +186,9 @@ export const Summary = (props: any) => {
 					{incomeSources.length !== 0 ? (
 						<PieChart totalWorth={totalWorth} data={incomeSources}></PieChart>
 					) : (
-						<Box sx={{ display: "flex", justifyContent: "center" }}>
+						<Box sx={{ display: "flex", justifyContent: "center" }}> */}
 							{/* <CircularProgress /> */}
-							<div>No data found</div>
+							{/* <div>No data found</div>
 						</Box>
 					)}
 
@@ -201,9 +212,9 @@ export const Summary = (props: any) => {
 							</div>
 						);
 					})}
-				</Box>
+				</Box> */}
 				{/* Right side */}
-				<Box
+				{/* <Box
 					sx={{
 						display: "flex",
 						flexDirection: "column",
@@ -292,7 +303,7 @@ export const Summary = (props: any) => {
 				createBudgetItem={false}
 				text={"create budget"}
 			></CreateBudgetPopUp>
-			{values.totalAccountBalance}
+			{values.totalAccountBalance}  */}
 		</>
 	);
 };

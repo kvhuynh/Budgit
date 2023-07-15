@@ -9,6 +9,7 @@ import {
 import { useNavigate } from "react-router-dom";
 
 import { exchangeToken } from "../services/googleApiService";
+import { createUser } from "../services/googleApiService";
 
 
 const SocialAuth = () => {
@@ -17,9 +18,20 @@ const SocialAuth = () => {
 	const login = useGoogleLogin({
 		onSuccess: (tokenResponse: CodeResponse) => {
       exchangeToken(tokenResponse)
-      console.log(tokenResponse)
+        .then((oAuthData: string) => {
+          createUser(oAuthData)
+            .then((successStatus: {isSuccess:boolean}) => {
+              if (successStatus.isSuccess) {
+                navigate("/summary")
+              }
+          })
+        })
+        .catch((error: any) => {
+          console.log(error);
+          
+        })
     },
-		onError: (error) => console.log(error),
+		onError: (error: any) => console.log(error),
 		flow: "auth-code",
 	});
 

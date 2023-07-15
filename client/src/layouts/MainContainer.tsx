@@ -2,6 +2,7 @@
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 
+
 import { Route, Routes } from "react-router-dom";
 import { LoginRegister } from "../views/LoginRegister";
 
@@ -12,12 +13,29 @@ import Transactions from "../views/Transactions";
 import ViewBudget from "../views/ViewBudget";
 import ViewBudgetItem from "../views/ViewBudgetItem";
 
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { getCurrentUser } from '../services/internalApiService';
 
 import { ThemeProvider } from "@emotion/react";
 import Login from "../components/Login";
 import Register from "../components/Register";
 
 export const MainContainer = (props: any) => {
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        console.log("fasdfasdfsadf")
+        getCurrentUser()
+        //     .then((user: any) => {
+		// 		if (user === undefined) {
+		// 			navigate("/login")
+		// 		}
+        //         navigate("/summary")
+        //     })
+    }, [])
 
 	return (
 		<Box sx={{ display: "flex" }}>
@@ -27,6 +45,8 @@ export const MainContainer = (props: any) => {
 					{/* <Route path="/" element={<LoginRegister/>}></Route> */}
 					<Route path="/login" element={<Login />}></Route>
 					<Route path="/register" element={<Register />}></Route>
+					<Route path="/summary" element={<Summary />} />
+
 				</Routes>
 				{/* <Routes>
 					<Route path="/" element={<LoginRegister />} />

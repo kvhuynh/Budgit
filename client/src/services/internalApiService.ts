@@ -20,6 +20,8 @@ export const loginUser = async (potentialUser: Object) => {
 };
 
 export const getCurrentUser = async () => {
+	console.log("getcurrentuser");
+	
 	const res = await http.get("/users/");
 	return res.data;
 };

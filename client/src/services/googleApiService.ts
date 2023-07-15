@@ -7,11 +7,17 @@ const http = axios.create({
 	withCredentials: true,
 });
 
-export const exchangeToken = async (tokenResponse: CodeResponse) => {	
-    console.log("HERE!!")
+
+export const exchangeToken = async (tokenResponse: CodeResponse): Promise<string> => {	
 	const res = await http.post("/exchangeToken", tokenResponse)
-	console.log(res);
 	
 	return res.data
+}
+
+export const createUser = async (refreshToken: string): Promise<{isSuccess: boolean}> => {
+    const res = await http.post("/createUser", refreshToken);
+    console.log(res.data);
+    return res.data
+    
 }
 

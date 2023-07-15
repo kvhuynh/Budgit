@@ -22,7 +22,7 @@ const handleRegisterUser = async (req: any, res: any) => {
 const handleLoginUser = async (req: any, res: any) => {
     try {
         const user = await loginUser(req.body, res);
-        console.log(user);
+        // console.log(user);
         
         return res.json(user)
     } catch (error: any) {

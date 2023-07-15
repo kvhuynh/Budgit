@@ -17,31 +17,16 @@ import { Sequelize, TEXT, BIGINT, DataTypes } from "sequelize";
 import { User } from "./user.model";
 
 @Table({ tableName: "google_auth_token" })
-export class IncomeSource extends Model {
+export class ThirdPartyAuth extends Model {
 	@AllowNull(false)
 	@AutoIncrement
 	@Column({ primaryKey: true })
 	id: number;
 
-	@Column({
-		field: "expired",
-		validate: {
-			notEmpty: {
-				msg: "Income name required.",
-			},
-		},
-	})
-	name: string;
-
-	@Column({
-		field: "access_token",
-	})
-	accessToken: string;
-
     @Column({
-		field: "token_type",
+		field: "refresh_token",
 	})
-	tokenType: string;
+	refreshToken: string;
 
 	@ForeignKey(() => User)
 	@Column({
