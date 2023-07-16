@@ -26,16 +26,19 @@ export const MainContainer = (props: any) => {
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        console.log("fasdfasdfsadf")
-        getCurrentUser()
-        //     .then((user: any) => {
-		// 		if (user === undefined) {
-		// 			navigate("/login")
-		// 		}
-        //         navigate("/summary")
-        //     })
-    }, [])
+	// useEffect(() => {
+	// 	const token = sessionStorage.getItem("token");
+	// 	// console.log(token);
+		
+	// 	getCurrentUser(token)
+	// 		.then((data) => {
+	// 			navigate("/summary")
+	// 		})
+	// 		.catch(() => {
+	// 			navigate("/login")
+	// 		})
+		
+	// }, [])
 
 	return (
 		<Box sx={{ display: "flex" }}>

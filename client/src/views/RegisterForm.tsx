@@ -85,6 +85,8 @@ const RegisterForm: React.FC = () => {
 								console.log(user.errors[i].message);
 							}
 						} else {
+							console.log(user);
+							localStorage.setItem("token", user.accessToken)
 							navigate("/summary");
 						}
 				setSubmitting(false);

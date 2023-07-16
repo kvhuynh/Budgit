@@ -8,29 +8,45 @@ const http = axios.create({
 // User operations
 export const createUser = async (potentialUser: Object) => {
 
-	console.log(potentialUser);
-
 	const res = await http.post("/users/register", potentialUser);
+	
 	return res.data;
 };
 
 export const loginUser = async (potentialUser: Object) => {
 	const res = await http.post("/users/login", potentialUser);
+	
 	return res.data;
 };
 
-export const getCurrentUser = async () => {
-	console.log("getcurrentuser");
+// export const getCurrentUser = async () => {
+// 	console.log("getcurrentuser");
 	
-	const res = await http.get("/users/");
+// 	const res = await http.get("/users/");
+// 	return res.data;
+// };
+
+export const getCurrentUser = async (token: any) => {
+	console.log(sessionStorage.getItem("token"));
+	
+	
+	const res = await http.post("/users/", {
+		// headers: {Authorization: sessionStorage.getItem("token")}
+		headers: {Authorization: localStorage.getItem("token")}
+
+	});
 	return res.data;
 };
+
+
 
 export const logoutUser = async () => {
-	const res = await http.get("/users/logout");
+	// const res = await http.get("/users/logout");
+	localStorage.clear();
 
-	return res.data;
+	// return res.data;
 };
+
 
 export const createBudget = async (budgetData: Object) => {
 	console.log(budgetData);

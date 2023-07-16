@@ -106,44 +106,77 @@ const decodeToken = async (idToken: string): Promise<string> => {
 const createUser = async (oAuthData: oAuthData, res: any) => {
 	const { given_name, family_name, email } = oAuthData.userData;
 
-	const userData = {
-		firstName: given_name,
-		lastName: family_name,
-		email: email,
-		password: null,
-		confirmPassword: null,
-		isOAuth: true,
-	};
+	const isNewUser = await User.findOne({ where: { email: email } });
 
-	const user = await User.create(userData)
-		.then((user: User) => {
-			const createAuth: Promise<ThirdPartyAuth> = ThirdPartyAuth.create({
-				refreshToken: oAuthData.refreshToken,
-				userId: user.id,
+	if (!isNewUser) {
+		const userData = {
+			firstName: given_name,
+			lastName: family_name,
+			email: email,
+			password: null,
+			confirmPassword: null,
+			isOAuth: true,
+		};
+	
+		const user = await User.create(userData)
+			.then((user: User) => {
+				const createAuth: Promise<ThirdPartyAuth> = ThirdPartyAuth.create({
+					refreshToken: oAuthData.refreshToken,
+					userId: user.id,
+				});
+	
+				const userToken = jwt.sign(
+					{
+						id: user.id,
+					},
+					process.env.SECRET_KEY
+				);
+				console.log(userToken);
+				
+				
+				// return res.status(201).send(userToken);
+				
+				return { isSuccess: true, accessToken: userToken };
+	
+				// res
+				// 	.cookie("userToken", userToken, secret, {
+				// 		httpOnly: true,
+				// 		sameSite: "none",
+				// 		// secure: "false"
+				// 	})
+				// 	.json({ msg: "success!" });
+	
+			})
+			.catch((error: any) => {
+	
+				return error;
 			});
+			
+			// return { isSuccess: true };
+			return user;
 
-			const userToken = jwt.sign(
-				{
-					id: user.id,
-				},
-				process.env.SECRET_KEY
-			);
-			console.log(userToken);
+	} else {
+		const userToken = jwt.sign(
+			{
+				id: isNewUser.id,
+			},
+			process.env.SECRET_KEY
+		);
+		console.log(userToken);
+		
+		
+		// return res.status(201).send(userToken);
+		
+		return { isSuccess: true, accessToken: userToken };
+	}
+	
 
-			res
-				.cookie("userToken", userToken, secret, {
-					httpOnly: true,
-					sameSite: "none",
-					// secure: "false"
-				})
-				.json({ msg: "success!" });
-		})
-		.catch((error: any) => {
-			return error;
-		});
 
-	return { isSuccess: true };
 };
+
+const loginUser = () => {
+
+}
 
 module.exports = {
 	exchangeToken,

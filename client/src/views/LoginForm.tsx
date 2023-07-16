@@ -72,6 +72,8 @@ export const LoginForm = () => {
 							    console.log(user.errors[i].message);
 						    }
 					    } else {
+							console.log(user.accessToken);
+							localStorage.setItem("token", user.accessToken)
 						    navigate("/summary");
 					    }
 				})
@@ -158,8 +160,6 @@ export const LoginForm = () => {
 										</InputAdornment>
 									),
 								}}
-								// error={Boolean(touched.password && errors.password)}
-								// helperText={touched.password && errors.password}
 							/>
 						) : (
 							<TextField

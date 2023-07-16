@@ -14,9 +14,16 @@ export const exchangeToken = async (tokenResponse: CodeResponse): Promise<string
 	return res.data
 }
 
-export const createUser = async (refreshToken: string): Promise<{isSuccess: boolean}> => {
+export const loginUser = async (test: any) => {
+	const res = await http.post("/loginThirdPartyAuth")
+}
+
+// export const createUser = async (refreshToken: string): Promise<{isSuccess: boolean, accessToken: object}> => {
+	export const createUser = async (refreshToken: string) => {
+	
+	
     const res = await http.post("/createUser", refreshToken);
-    console.log(res.data);
+    console.log(res);
     return res.data
     
 }

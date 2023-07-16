@@ -10,7 +10,8 @@ import { motion } from "framer-motion";
 //////////////////////////////////
 const RootStyle = styled("div")({
 	background: "linear-gradient(180deg, #c4beee 0%, #0a5cff 100%)",
-	height: "110vh",
+	// height: "110vh",
+	minHeight: "100vh",
 	padding: 20,
 	display: "grid",
 	placeItems: "center",

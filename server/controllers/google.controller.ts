@@ -19,6 +19,7 @@ const handleExchangeToken = async (req: any, res: any): Promise<string> => {
 const handleCreateUser = async (req: any, res: any): Promise<any> => {
     try {
         const user = await createUser(req.body);
+        
         return res.json(user);
     }
 

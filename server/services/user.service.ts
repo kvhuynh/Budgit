@@ -19,11 +19,12 @@ const createUser = async (data: any, res: any) => {
 				process.env.SECRET_KEY
 			);
 
-			res
-				.cookie("usertoken", userToken, secret, {
-					httpOnly: true,
-				})
-				.json({ msg: "success!" });
+			return { isSuccess: true, accessToken: userToken };
+			// res
+			// 	.cookie("usertoken", userToken, secret, {
+			// 		httpOnly: true,
+			// 	})
+			// 	.json({ msg: "success!" });
 		})
 		.catch((err: any) => {
 			return err;
@@ -53,13 +54,14 @@ const loginUser = async (data: any, res: any) => {
 		},
 		process.env.SECRET_KEY
 	);
-
-	res
-		.cookie("usertoken", userToken, secret, {
-			httpOnly: true,
-			// secure: false
-		})
-		.json({ msg: "success!" });
+	
+	return {accessToken: userToken};
+	// res
+	// 	.cookie("usertoken", userToken, secret, {
+	// 		httpOnly: true,
+	// 		// secure: false
+	// 	})
+	// 	.json({ msg: "success!" });
 };
 
 const logoutUser = async (res: any) => {
@@ -70,10 +72,11 @@ const logoutUser = async (res: any) => {
 const getCurrentUser = async (res: any) => {
 	// console.log("getCurrentUserBackend");
 	// console.log(res);
-	
-	const id = getSessionId(res.usertoken);
-	const user = await User.findOne({ where: { id: id } });
-	// console.log(user);
+	console.log(res.id.id);
+		
+	// const id = getSessionId(res.id);
+	const user = await User.findOne({ where: { id: res.id.id } });
+	console.log(user);
 	
 	return user;
 };

@@ -15,17 +15,17 @@ export const Navbar = () => {
 	const [loggedIn, setLoggedIn] = useState(false);
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		getCurrentUser()
-			.then((user: Object) => {
-				if (user !== null) {
-					setLoggedIn(true);
-				}
-			})
-			.catch((error: any) => {
-				console.log(error);
-			});
-	});
+	// useEffect(() => {
+	// 	getCurrentUser()
+	// 		.then((user: Object) => {
+	// 			if (user !== null) {
+	// 				setLoggedIn(true);
+	// 			}
+	// 		})
+	// 		.catch((error: any) => {
+	// 			console.log(error);
+	// 		});
+	// });
 
 	const handleOnClick = () => {
 		logoutUser().then((user: any) => {

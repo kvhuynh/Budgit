@@ -1,36 +1,58 @@
+import { useEffect } from "react"
+
 import { Icon } from "@iconify/react";
-import { Stack, Button, IconButton } from "@mui/material";
+import { IconButton, Stack } from "@mui/material";
 import {
 	CodeResponse,
-	GoogleLogin,
-	useGoogleLogin,
-	useGoogleOneTapLogin,
+	useGoogleLogin
 } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 
-import { exchangeToken } from "../services/googleApiService";
-import { createUser } from "../services/googleApiService";
-
+import { getCurrentUser } from "../services/internalApiService"
+import { createUser, exchangeToken, loginUser } from "../services/googleApiService";
 
 const SocialAuth = () => {
 	const navigate = useNavigate();
 
+	// useEffect(() => {
+	// 	const session:string = localStorage.getItem("token")!
+	// 	if (!session) {
+	// 		navigate("/login")
+	// 	}
+	// 	getCurrentUser(session)
+	// 		.then(() => {
+
+	// 		})
+	// }, [])
+
 	const login = useGoogleLogin({
 		onSuccess: (tokenResponse: CodeResponse) => {
-      exchangeToken(tokenResponse)
-        .then((oAuthData: string) => {
-          createUser(oAuthData)
-            .then((successStatus: {isSuccess:boolean}) => {
-              if (successStatus.isSuccess) {
-                navigate("/summary")
-              }
-          })
-        })
-        .catch((error: any) => {
-          console.log(error);
-          
-        })
-    },
+			
+			exchangeToken(tokenResponse)
+				.then((oAuthData: string) => {
+					// add a case where the user already has an account
+					createUser(oAuthData).then(
+						(successStatus: { isSuccess: boolean; accessToken: string }) => {
+							if (successStatus.isSuccess) {
+								localStorage.setItem("token", successStatus.accessToken)
+								navigate("/summary");
+							} else {
+								// account already is in database
+								loginUser(successStatus.accessToken)
+									.then(() => {
+										// console.log(successStatus.accessToken);
+										
+										navigate("/summary")
+										localStorage.setItem("token", successStatus.accessToken)
+									})
+							}
+						}
+					);
+				})
+				.catch((error: any) => {
+					console.log(error);
+				});
+		},
 		onError: (error: any) => console.log(error),
 		flow: "auth-code",
 	});
@@ -72,12 +94,7 @@ const SocialAuth = () => {
 						flex: 1,
 					}}
 				>
-					<Icon
-						icon="eva:github-fill"
-						color="#1C9CEA"
-						width={22}
-						height={22}
-					/>
+					<Icon icon="eva:github-fill" color="#1C9CEA" width={22} height={22} />
 				</IconButton>
 			</Stack>
 		</>

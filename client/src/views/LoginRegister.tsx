@@ -42,13 +42,13 @@ export const LoginRegister = (props: any) => {
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        console.log("fasdfasdfsadf")
-        getCurrentUser()
-            .then((user: any) => {
-                navigate("/summary")
-            })
-    })
+    // useEffect(() => {
+    //     console.log("fasdfasdfsadf")
+    //     getCurrentUser()
+    //         .then((user: any) => {
+    //             navigate("/summary")
+    //         })
+    // })
     
     return (
         <Routes>
