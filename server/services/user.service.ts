@@ -56,12 +56,6 @@ const loginUser = async (data: any, res: any) => {
 	);
 	
 	return {accessToken: userToken};
-	// res
-	// 	.cookie("usertoken", userToken, secret, {
-	// 		httpOnly: true,
-	// 		// secure: false
-	// 	})
-	// 	.json({ msg: "success!" });
 };
 
 const logoutUser = async (res: any) => {
@@ -69,16 +63,18 @@ const logoutUser = async (res: any) => {
 	res.sendStatus(200);
 };
 
-const getCurrentUser = async (res: any) => {
-	// console.log("getCurrentUserBackend");
-	// console.log(res);
-	console.log(res.id.id);
+// const getCurrentUser = async (res: any) => {
 		
-	// const id = getSessionId(res.id);
-	const user = await User.findOne({ where: { id: res.id.id } });
-	console.log(user);
+// 	const user = await User.findOne({ where: { id: res.id.id } });
 	
-	return user;
+// 	return {id: user?.id, firstName: user?.firstName, lastName:	user?.lastName, email: user?.email}
+// };
+const getCurrentUser = async (res: any) => {
+	
+	const user = await User.findOne({ where: { id: getSessionId(res)} });
+	// console.log(user);
+	
+	return {id: user?.id, firstName: user?.firstName, lastName:	user?.lastName, email: user?.email}
 };
 
 const getOneUser = async (id: number, res: any) => {

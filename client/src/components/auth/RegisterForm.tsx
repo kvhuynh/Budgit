@@ -13,7 +13,8 @@ import { LoadingButton } from "@mui/lab";
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 
-import { createUser } from "../services/internalApiService";
+import { createUser } from "../../services/auth/userApiService";
+import Cookies from "js-cookie";
 
 let easing = [0.6, -0.05, 0.01, 0.99];
 const animate = {
@@ -86,8 +87,10 @@ const RegisterForm: React.FC = () => {
 							}
 						} else {
 							console.log(user);
-							localStorage.setItem("token", user.accessToken)
-							navigate("/summary");
+							// localStorage.setItem("token", user.accessToken)
+							// navigate("/summary");
+							Cookies.set("token", user.accessToken);
+						    navigate("/summary");
 						}
 				setSubmitting(false);
 

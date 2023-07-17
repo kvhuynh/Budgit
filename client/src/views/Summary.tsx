@@ -1,59 +1,49 @@
-import Box from "@mui/material/Box";
-import Card from "@mui/material/Card";
-import Grid from "@mui/material/Grid";
-import { CardActionArea, Container, Divider } from "@mui/material";
-import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import CircularProgress from "@mui/material/CircularProgress";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import Drawer from "@mui/material/Drawer";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import { Container, IconButton, Stack } from "@mui/material";
+import { Icon } from "@iconify/react";
+
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 
 import { TypeAnimation } from "react-type-animation";
 
-import { usePlaidLink } from "react-plaid-link";
 import Cookies from "js-cookie";
+import { usePlaidLink } from "react-plaid-link";
 
 import { useEffect, useState } from "react";
-import { CreateBudgetPopUp } from "../components/CreateBudgetPopUp";
-import { TransactionTable } from "../components/TransactionTable";
 
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-import { PieChart } from "../components/graphs/PieChart";
-
-import {
-	getCurrentUser,
-	logoutUser,
-	getAllBudgets,
-	deleteBudget,
-	getAllIncomeSources,
-	getAllTransactions,
-} from "../services/internalApiService";
+import { getCurrentUser, logoutUser } from "../services/auth/userApiService";
 
 import { createLinkToken, exchangeTokens } from "../services/plaidApiService";
 
-import React from "react";
-import { Link as RouterLink } from "react-router-dom";
 import styled from "@emotion/styled";
-import LoginForm from "../views/LoginForm";
-import SocialAuth from "../components/SocialAuth";
-import Logo from "../components/Logo";
 import { motion } from "framer-motion";
+import Logo from "../components/Logo";
+import SocialAuth from "../components/auth/SocialAuth";
+import PieChart from "../components/graphs/PieChart";
+import TransactionTable from "../components/TransactionTable";
+import { getAllIncomeSources, getAllTransactions } from "../services/incomeSourcesApiService";
 
-interface State {
+interface UserState {
 	budgets: Array<any>;
+	id: number;
 	firstName: string;
 	lastName: string;
+	email: string;
 	totalAccountBalance: number;
 	reload: boolean;
 }
 
 const initialState = {
 	budgets: [],
+	id: 0,
 	firstName: "",
 	lastName: "",
+	email: "",
 	totalAccountBalance: 0,
 	reload: false,
 };
@@ -99,13 +89,13 @@ const commonBoxStyles: any = {
 	flexDirection: "column",
 	background: "#fff",
 	borderRadius: 50,
-}
+};
 
-const ContentStyle = styled(Box)(commonBoxStyles );
+const ContentStyle = styled(Box)(commonBoxStyles);
 
 const ContentStyle1 = styled(Box)({
 	width: "90%",
-	height: "40%",
+	// height: "40%",
 	padding: 25,
 	margin: "auto",
 	display: "flex",
@@ -113,32 +103,32 @@ const ContentStyle1 = styled(Box)({
 	alignItems: "center",
 	background: "#fff",
 	borderRadius: 50,
-	marginTop: "5%",
+	// marginTop: "5%",
 });
 
-const ContentStyle2 = styled(Box)(
-	// {...ContentStyle1}
-);
+const ContentStyle2 = styled(Box)();
+// {...ContentStyle1}
 
 export const Summary = (props: any) => {
-	const [values, setValues] = useState<State>(initialState);
+	const [values, setValues] = useState<UserState>(initialState);
 	const navigate = useNavigate();
-	const [currentUser, setCurrentUser] = useState({ name: "Kevin" });
 	const [linkToken, setLinkToken] = useState(null);
 	const [incomeSources, setIncomeSources] = useState<any>([]);
 	const [totalWorth, setTotalWorth] = useState<number>(0);
 	const [transactions, setTransactions] = useState<any>([]);
 	const [isRetrieved, setIsRetrieved] = useState(false);
+	const [reload, setReload] = useState(false);
 
 	const [loggedIn, setLoggedIn] = useState(false);
 
 	const { open, ready } = usePlaidLink({
 		token: linkToken,
 		onSuccess: (publicToken, metadata) => {
-			exchangeTokens(publicToken)
+			exchangeTokens(publicToken, localStorage.getItem("token")!)
 				.then((item: any) => {
 					setIncomeSources([...incomeSources, item]);
-					handleReloadOnCreate();
+					// handleReloadOnCreate();
+					setReload(!reload);
 				})
 				.catch((error: any) => {
 					console.log(error);
@@ -147,16 +137,55 @@ export const Summary = (props: any) => {
 	});
 
 	useEffect(() => {
-		const token = localStorage.getItem("token");
-			createLinkToken()
-				.then((token: any) => {
-					// console.log("do we get here")
-					
-					setLinkToken(token.link_token);
-				})
-				.catch((error: any) => {
-					console.log(error);
-				});
+		// const token = localStorage.getItem("token");
+		// Cookies.set("token", token!);
+		// getCurrentUser(token).then((user: UserState) => {
+		// 	if (Object.keys(user).length === 0) {
+		// 		localStorage.clear();
+		// 	} else {
+		// 		setValues(user);
+		// 	}
+		// });
+		console.log("wtf");
+		
+		getCurrentUser().then((user: UserState) => {
+			if (Object.keys(user).length === 0) {
+				// localStorage.clear();
+				Cookies.remove("token")
+			} else {
+				console.log(user);
+				
+				setValues(user);
+			}
+		})
+		.catch ((error) => {
+			Cookies.remove("token")
+			navigate("/login")
+		})
+		// createLinkToken()
+		// 	.then((token: any) => {
+		// 		// console.log("do we get here")
+
+		// 		setLinkToken(token.link_token);
+		// 	})
+		// 	.catch((error: any) => {
+		// 		console.log(error);
+		// 	});
+
+
+		// getAllIncomeSources()
+		// 	.then((incomeSources: any) => {
+		// 		setIncomeSources(incomeSources.incomeSources);
+		// 		setTotalWorth(incomeSources.total);
+		// 	})
+		// 	.then(() => {
+		// 		setIsRetrieved(true);
+		// 	})
+		// 	.catch((error: any) => {
+		// 		console.log(error);
+		// 	});
+
+		// retrieveTransactions();
 
 		// getCurrentUser(token)
 		// 	.then((data) => {})
@@ -170,15 +199,15 @@ export const Summary = (props: any) => {
 	// 		fetchData()
 	// }, [values.reload, isRetrieved]);
 
-	// const retrieveTransactions = () => {
-	// 	getAllTransactions()
-	// 	.then((transactions: any) => {
-	// 		setTransactions(transactions[0])
-	// 	})
-	// 	.catch((error: any) => {
-	// 		console.log(error);
-	// 	});
-	// }
+	const retrieveTransactions = () => {
+		getAllTransactions()
+			.then((transactions: any) => {
+				setTransactions(transactions[0]);
+			})
+			.catch((error: any) => {
+				console.log(error);
+			});
+	};
 
 	// const fetchData = () => {
 	// 	getCurrentUser()
@@ -232,17 +261,14 @@ export const Summary = (props: any) => {
 	// }
 	const handleReloadOnCreate = () => {
 		setValues({ ...values, reload: !values.reload });
-		Cookies.remove("summary");
-		setIsRetrieved(false);
+		// Cookies.remove("summary");
+		// setIsRetrieved(false);
 	};
 
 	const handleOnClick = () => {
-		logoutUser().then((user: any) => {
-			setLoggedIn(false);
-
-			localStorage.clear();
-			navigate("/login");
-		});
+		// localStorage.clear();
+		Cookies.remove("token")
+		navigate("/login");
 	};
 
 	return (
@@ -252,43 +278,47 @@ export const Summary = (props: any) => {
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
 							<ContentStyle1
-								// boxShadow={3}
+								boxShadow={3}
 								onClick={handleOnClick}
 								component={motion.div}
 								{...fadeInUp}
 							>
-								<TypeAnimation
-									sequence={[`Welcome back ${currentUser.name}`, 1000]}
-									wrapper="span"
-									speed={50}
-									style={{ fontSize: "4em", display: "inline-block" }}
-									cursor={false}
-								/>
+								Welcome back {values.firstName}
 							</ContentStyle1>
 						</Grid>
-						<Grid item xs={6}>
+						<Grid item xs={3}>
 							<Container maxWidth="sm">
 								<ContentStyle component={motion.div} {...fadeInUp}>
 									<HeadingStyle component={motion.div} {...fadeInUp}>
 										Total worth
-										<Logo />
-										<Typography sx={{ color: "text.secondary", mb: 5 }}>
-											Connect your bank account
-										</Typography>
+										<PieChart
+											totalWorth={totalWorth}
+											data={incomeSources}
+										></PieChart>
 									</HeadingStyle>
 									<Box component={motion.div} {...fadeInUp}>
-										<Button onClick={() => open()}>
-											link bank account{" "}
-											<AccountBalanceIcon></AccountBalanceIcon>
-										</Button>
+										<Stack direction="row" spacing={2}>
+											<IconButton
+												onClick={() => open()}
+												sx={{
+													border: "2px solid #ccc",
+													borderRadius: "5px",
+													padding: "0.5675rem",
+													flex: 1,
+												}}
+											>
+												<Icon icon="mdi:bank" width={22} height={22} /> Connect
+												a bank account
+											</IconButton>
+										</Stack>
 									</Box>
 								</ContentStyle>
 							</Container>
 						</Grid>
-						<Grid item xs={6}>
-							<Container maxWidth="sm">
-								<ContentStyle component={motion.div} {...fadeInUp}>
-									<Button onClick={handleOnClick}>sdfsdf</Button>
+						<Grid item xs={9}>
+							<Container maxWidth="lg">
+								<ContentStyle1 component={motion.div} {...fadeInUp}>
+									{/* <Button onClick={handleOnClick}>sdfsdf</Button>
 									<HeadingStyle component={motion.div} {...fadeInUp}>
 										<Logo />
 										<Typography sx={{ color: "text.secondary", mb: 5 }}>
@@ -297,34 +327,15 @@ export const Summary = (props: any) => {
 									</HeadingStyle>
 									<Box component={motion.div} {...fadeInUp}>
 										<SocialAuth />
-									</Box>
-								</ContentStyle>
+									</Box> */}
+									{/* <TransactionTable data={transactions}></TransactionTable> */}
+									<TransactionTable></TransactionTable>
+								</ContentStyle1>
 							</Container>
 						</Grid>
 					</Grid>
 				</Box>
 			</RootStyle>
-			{/* <RootStyle>
-				<Grid>
-
-				</Grid>
-				<Container maxWidth="sm">
-					<ContentStyle component={motion.div} {...fadeInUp}>
-						<Button onClick={handleOnClick}>sdfsdf</Button>
-						<HeadingStyle component={motion.div} {...fadeInUp}>
-							<Logo />
-							<Typography sx={{ color: "text.secondary", mb: 5 }}>
-								Login to your account
-							</Typography>
-						</HeadingStyle>
-						<Box component={motion.div} {...fadeInUp}>
-							<SocialAuth />
-						</Box>
-					</ContentStyle>
-					<ContentStyle component={motion.div} {...fadeInUp}></ContentStyle>
-				</Container>
-				
-			</RootStyle> */}
 
 			{/* <Box
 				sx={{

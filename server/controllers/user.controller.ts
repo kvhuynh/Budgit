@@ -12,7 +12,6 @@ const handleRegisterUser = async (req: any, res: any) => {
     
     try {
         const user = await createUser(req.body, res)     
-        console.log(user);
         
         return res.json(user);
     } catch (error: any) {   
@@ -37,10 +36,11 @@ const handleLoginUser = async (req: any, res: any) => {
 
 const handleGetCurrentUser = async (req: any, res: any) => {
     try {
-        // console.log(req);
+
+        // const user = await getCurrentUser(req);
         
-        // const user = await getCurrentUser(req.cookies);
-        const user = await getCurrentUser(req)
+        const user = await getCurrentUser(req.cookies.token)
+        
         return res.json(user);
     } catch (error: any) {
         console.log(error);

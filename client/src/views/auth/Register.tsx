@@ -2,9 +2,9 @@ import { Link as RouterLink } from "react-router-dom";
 import { Container, Typography, Link, Box, Divider } from "@mui/material";
 import styled from "@emotion/styled";
 
-import SocialAuth from "../components/SocialAuth";
-import RegisterForm from "../views/RegisterForm";
-import Logo from "../components/Logo";
+import SocialAuth from "../../components/auth/SocialAuth";
+import RegisterForm from "../../components/auth/RegisterForm";
+import Logo from "../../components/Logo";
 import { motion } from "framer-motion";
 
 //////////////////////////////////

@@ -102,10 +102,8 @@ export class User extends Model {
 	@Column(DataType.VIRTUAL)
 	confirmPassword: string;
 
-	// @Column
-
-	// @HasMany(() => Budget)
-	// budgets: Budget[];
+	@HasMany(() => Budget)
+	budgets: Budget[];
 
 	@CreatedAt
 	created_at: Date;

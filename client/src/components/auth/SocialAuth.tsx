@@ -8,22 +8,24 @@ import {
 } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 
-import { getCurrentUser } from "../services/internalApiService"
-import { createUser, exchangeToken, loginUser } from "../services/googleApiService";
+import { getCurrentUser } from "../../services/auth/userApiService"
+import { createUser, exchangeToken, loginUser } from "../../services/auth/googleApiService";
+import Cookies from "js-cookie";
 
 const SocialAuth = () => {
 	const navigate = useNavigate();
 
-	// useEffect(() => {
-	// 	const session:string = localStorage.getItem("token")!
-	// 	if (!session) {
-	// 		navigate("/login")
-	// 	}
-	// 	getCurrentUser(session)
-	// 		.then(() => {
-
-	// 		})
-	// }, [])
+	useEffect(() => {
+		const session = Cookies.get("token")
+		if (!session && window.location.pathname === "/register") {
+			navigate("/register")
+		} else if (!session && window.location.pathname === "/login"){
+			navigate("/login")
+		} else {
+			navigate("/summary")
+		}
+		// getCurrentUser(session)
+	}, [])
 
 	const login = useGoogleLogin({
 		onSuccess: (tokenResponse: CodeResponse) => {
@@ -34,7 +36,9 @@ const SocialAuth = () => {
 					createUser(oAuthData).then(
 						(successStatus: { isSuccess: boolean; accessToken: string }) => {
 							if (successStatus.isSuccess) {
-								localStorage.setItem("token", successStatus.accessToken)
+								// localStorage.setItem("token", successStatus.accessToken)
+								// navigate("/summary");
+								Cookies.set("token", successStatus.accessToken);
 								navigate("/summary");
 							} else {
 								// account already is in database
@@ -42,8 +46,10 @@ const SocialAuth = () => {
 									.then(() => {
 										// console.log(successStatus.accessToken);
 										
-										navigate("/summary")
-										localStorage.setItem("token", successStatus.accessToken)
+										// navigate("/summary")
+										// localStorage.setItem("token", successStatus.accessToken)
+										Cookies.set("token", successStatus.accessToken);
+										navigate("/summary");
 									})
 							}
 						}

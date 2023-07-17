@@ -25,7 +25,9 @@ const handleCreateLinkToken = async (req: any, res: any) => {
 const handleSetAccessToken = async (req: any, res: any) => {
     try {
 
-        const accessToken = await setAccessToken(req.body, req.cookies.usertoken)
+        // const accessToken = await setAccessToken(req.body, req.cookies.usertoken)
+        const accessToken = await setAccessToken(req.body.publicToken, req.body.userId);
+
 		
 		return res.json(accessToken)
         

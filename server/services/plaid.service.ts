@@ -57,10 +57,11 @@ const createLinkToken = async () => {
 
 
 // Called from 
-const setAccessToken = async (publicToken: any, userId: string) => {
-	
+const setAccessToken = async (publicToken: any, userId: string) => {	
 	const tokenResponse = await client.itemPublicTokenExchange({
-		public_token: publicToken.publicToken,
+		// public_token: publicToken.publicToken,
+		public_token: publicToken
+
 	});
 
 	const institutionData = await retrieveInstitution(tokenResponse.data.access_token)
@@ -78,7 +79,7 @@ const setAccessToken = async (publicToken: any, userId: string) => {
 	
 	const test = await retrieveBankInformation([{accessToken: data.accessToken}])
 	
-	// console.log(test);
+	console.log(test);
 	
 	
 	return test

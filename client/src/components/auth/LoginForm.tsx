@@ -17,7 +17,8 @@ import { LoadingButton } from "@mui/lab";
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 
-import { loginUser } from "../services/internalApiService";
+import { loginUser } from "../../services/auth/userApiService";
+import Cookies from "js-cookie";
 
 let easing = [0.6, -0.05, 0.01, 0.99];
 const animate = {
@@ -73,7 +74,8 @@ export const LoginForm = () => {
 						    }
 					    } else {
 							console.log(user.accessToken);
-							localStorage.setItem("token", user.accessToken)
+							// localStorage.setItem("token", user.accessToken)
+							Cookies.set("token", user.accessToken);
 						    navigate("/summary");
 					    }
 				})
