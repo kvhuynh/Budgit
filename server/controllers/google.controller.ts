@@ -1,11 +1,11 @@
-export {}
+import { Request, Response } from "express";
 
 const {
     exchangeToken,
     createUser
 } = require("../services/google.service")
 
-const handleExchangeToken = async (req: any, res: any): Promise<string> => {
+const handleExchangeToken = async (req: Request, res: any): Promise<string> => {
     try {
         const refreshToken = await exchangeToken(req.body.code);
         
@@ -16,7 +16,7 @@ const handleExchangeToken = async (req: any, res: any): Promise<string> => {
     }
 }
 
-const handleCreateUser = async (req: any, res: any): Promise<any> => {
+const handleCreateUser = async (req: Request, res: Response): Promise<any> => {
     try {
         const user = await createUser(req.body);
         

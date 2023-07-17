@@ -26,7 +26,10 @@ import Logo from "../components/Logo";
 import SocialAuth from "../components/auth/SocialAuth";
 import PieChart from "../components/graphs/PieChart";
 import TransactionTable from "../components/TransactionTable";
-import { getAllIncomeSources, getAllTransactions } from "../services/incomeSourcesApiService";
+import {
+	getAllIncomeSources,
+	getAllTransactions,
+} from "../services/incomeSourcesApiService";
 
 interface UserState {
 	budgets: Array<any>;
@@ -124,7 +127,7 @@ export const Summary = (props: any) => {
 	const { open, ready } = usePlaidLink({
 		token: linkToken,
 		onSuccess: (publicToken, metadata) => {
-			exchangeTokens(publicToken, localStorage.getItem("token")!)
+			exchangeTokens(publicToken, Cookies.get("token")!)
 				.then((item: any) => {
 					setIncomeSources([...incomeSources, item]);
 					// handleReloadOnCreate();
@@ -137,41 +140,47 @@ export const Summary = (props: any) => {
 	});
 
 	useEffect(() => {
-		// const token = localStorage.getItem("token");
-		// Cookies.set("token", token!);
-		// getCurrentUser(token).then((user: UserState) => {
-		// 	if (Object.keys(user).length === 0) {
-		// 		localStorage.clear();
-		// 	} else {
-		// 		setValues(user);
-		// 	}
-		// });
-		console.log("wtf");
-		
-		getCurrentUser().then((user: UserState) => {
-			if (Object.keys(user).length === 0) {
-				// localStorage.clear();
-				Cookies.remove("token")
-			} else {
-				console.log(user);
-				
-				setValues(user);
-			}
-		})
-		.catch ((error) => {
-			Cookies.remove("token")
-			navigate("/login")
-		})
+		getCurrentUser()
+			.then((user: UserState) => {
+				if (Object.keys(user).length === 0) {
+					// localStorage.clear();
+					Cookies.remove("token");
+					navigate("/login");
+				} else {
+					console.log(user);
+					setValues(user);
+				}
+			})
+			.then(() => {
+				createLinkToken()
+					.then((token: any) => {
+						setLinkToken(token.link_token);
+					})
+					.catch((error: any) => {
+						console.log(error);
+					});
+			})
+			.then(() => {
+				getAllIncomeSources().then((incomeSources: any) => {
+					console.log(incomeSources);
+					
+					setIncomeSources(incomeSources.incomeSources);
+					setTotalWorth(incomeSources.total);
+					setReload(!reload)
+				});
+			})
+			.catch((error) => {
+				Cookies.remove("token");
+				navigate("/login");
+			});
 		// createLinkToken()
 		// 	.then((token: any) => {
-		// 		// console.log("do we get here")
 
 		// 		setLinkToken(token.link_token);
 		// 	})
 		// 	.catch((error: any) => {
 		// 		console.log(error);
 		// 	});
-
 
 		// getAllIncomeSources()
 		// 	.then((incomeSources: any) => {
@@ -192,7 +201,7 @@ export const Summary = (props: any) => {
 		// 	.catch(() => {
 		// 		navigate("/login");
 		// 	});
-	}, []);
+	}, [totalWorth]);
 
 	// useEffect(() => {
 	// 		retrieveTransactions()
@@ -267,7 +276,7 @@ export const Summary = (props: any) => {
 
 	const handleOnClick = () => {
 		// localStorage.clear();
-		Cookies.remove("token")
+		Cookies.remove("token");
 		navigate("/login");
 	};
 
@@ -290,7 +299,7 @@ export const Summary = (props: any) => {
 							<Container maxWidth="sm">
 								<ContentStyle component={motion.div} {...fadeInUp}>
 									<HeadingStyle component={motion.div} {...fadeInUp}>
-										Total worth
+										Total worth : {totalWorth}
 										<PieChart
 											totalWorth={totalWorth}
 											data={incomeSources}
@@ -299,7 +308,9 @@ export const Summary = (props: any) => {
 									<Box component={motion.div} {...fadeInUp}>
 										<Stack direction="row" spacing={2}>
 											<IconButton
-												onClick={() => open()}
+												onClick={() => {
+													open();
+												}}
 												sx={{
 													border: "2px solid #ccc",
 													borderRadius: "5px",

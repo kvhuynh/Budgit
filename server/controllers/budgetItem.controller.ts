@@ -1,3 +1,5 @@
+import { Request, Response } from "express";
+
 const {
 	getAllBudgetItems,
 	getOneBudgetItem,
@@ -6,7 +8,7 @@ const {
 	deleteBudgetItem,
 } = require("../services/budgetItem.service");
 
-const handleGetAllBudgetItems = async (req: any, res: any) => {
+const handleGetAllBudgetItems = async (req: Request, res: Response) => {
 	try {
 		console.log(req.params);
 
@@ -21,7 +23,7 @@ const handleGetAllBudgetItems = async (req: any, res: any) => {
 	}
 };
 
-const handleGetOneBudgetItem = async (req: any, res: any) => {
+const handleGetOneBudgetItem = async (req: Request, res: Response) => {
 	
 	try {
 		const budgetItem = await getOneBudgetItem(req.cookies.usertoken, req.params.id);
@@ -32,7 +34,7 @@ const handleGetOneBudgetItem = async (req: any, res: any) => {
 	}
 };
 
-const handleCreateBudgetItem = async (req: any, res: any) => {
+const handleCreateBudgetItem = async (req: Request, res: Response) => {
 	try {
 	
 		const budgetItem = await createBudgetItem(req.params.budgetId, req.body);
@@ -42,7 +44,7 @@ const handleCreateBudgetItem = async (req: any, res: any) => {
 	}
 };
 
-const handleUpdateBudgetItem = async (req: any, res: any) => {
+const handleUpdateBudgetItem = async (req: Request, res: Response) => {
 	try {
 
 		const budgetItem = await updateBudgetItem(req.params.id, req.body);
@@ -55,7 +57,7 @@ const handleUpdateBudgetItem = async (req: any, res: any) => {
 	}
 };
 
-const handleDeleteBudgetItem = async (req: any, res: any) => {
+const handleDeleteBudgetItem = async (req: Request, res: Response) => {
 	try {
 
 		const budgetItem = await deleteBudgetItem(req.params.budgetId);

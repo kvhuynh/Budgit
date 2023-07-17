@@ -12,8 +12,7 @@ export const createLinkToken = async () => {
 }
 
 export const exchangeTokens = async (publicToken: string, userId: string) => {	
-	const res = await http.post("/setAccessToken", { publicToken: publicToken, userId: userId })
-	console.log(res);
+	const res = await http.post("/setAccessToken", { publicToken: publicToken })
 	
 	return res.data
 }

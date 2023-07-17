@@ -1,20 +1,22 @@
+import { Request, Response } from "express";
+
 const {
 	createLinkToken,
 	setAccessToken,
 } = require("../services/plaid.service");
 
-const handleGetInfo = async (req: any, res: any) => {
+const handleGetInfo = async (req: Request, res: Response) => {
 	try {
 	} catch (error: any) {
 		return res.status(400).json(error);
 	}
 };
 
-const handleCreateLinkToken = async (req: any, res: any) => {
+const handleCreateLinkToken = async (req: Request, res: Response) => {
 	try {
 		const linkToken = await createLinkToken();
 
-		return res.json(linkToken)
+		return res.json(linkToken);
 	} catch (error: any) {
 		console.log(error);
 
@@ -22,23 +24,20 @@ const handleCreateLinkToken = async (req: any, res: any) => {
 	}
 };
 
-const handleSetAccessToken = async (req: any, res: any) => {
-    try {
+const handleSetAccessToken = async (req: Request, res: Response) => {
+	try {
+		const accessToken = await setAccessToken(
+			req.body.publicToken,
+			req.cookies.token
+		);
 
-        // const accessToken = await setAccessToken(req.body, req.cookies.usertoken)
-        const accessToken = await setAccessToken(req.body.publicToken, req.body.userId);
-
-		
-		return res.json(accessToken)
-        
-    } catch (error: any) {
-        console.log(error);
-        
-    }
+		return res.json(accessToken);
+	} catch (error: any) {
+		console.log(error);
+	}
 };
-
 
 module.exports = {
 	handleCreateLinkToken,
-    handleSetAccessToken,
+	handleSetAccessToken,
 };

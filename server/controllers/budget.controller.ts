@@ -1,4 +1,4 @@
-export {}
+import { Request, Response } from "express";
 
 const {
     getAllBudgets,
@@ -8,7 +8,7 @@ const {
     deleteBudget
 } = require("../services/budget.service")
 
-const handleGetAllBudgets = async (req: any, res: any) => {
+const handleGetAllBudgets = async (req: Request, res: Response) => {
     try {
         const budgets = await getAllBudgets(req.cookies.usertoken);
         return res.json(budgets);
@@ -17,7 +17,7 @@ const handleGetAllBudgets = async (req: any, res: any) => {
     }
 }
 
-const handleGetOneBudget = async (req: any, res: any) => {
+const handleGetOneBudget = async (req: Request, res: Response) => {
     try {    
         const budget = await getOneBudget(req.cookies.usertoken, req.params.name);
         return res.json(budget)
@@ -26,7 +26,7 @@ const handleGetOneBudget = async (req: any, res: any) => {
     }
 }
 
-const handleCreateBudget = async (req: any, res: any) => {
+const handleCreateBudget = async (req: Request, res: Response) => {
     try {
         const budget = await createBudget(req.cookies.usertoken, req.body)
         return res.json(budget);
@@ -35,7 +35,7 @@ const handleCreateBudget = async (req: any, res: any) => {
     }
 }
 
-const handleUpdateBudget = async (req: any, res: any) => {
+const handleUpdateBudget = async (req: Request, res: Response) => {
     try {    
         const budget = await updateBudget(req.cookies.usertoken, req.params.name, req.body);
         return res.json(budget);
@@ -44,7 +44,7 @@ const handleUpdateBudget = async (req: any, res: any) => {
     }
 }
 
-const handleDeleteBudget = async (req: any, res: any) => {
+const handleDeleteBudget = async (req: Request, res: Response) => {
     try {
         const budget = await deleteBudget(req.cookies.usertoken, req.params.id);
         return res.json(budget);

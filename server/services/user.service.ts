@@ -1,30 +1,20 @@
-export {};
-
-const secret = process.env.FIRST_SECRET_KEY;
-
 import { User } from "../models/user.model";
 const { getSessionId } = require("../utilities/getSessionId.utilities");
 
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-const createUser = async (data: any, res: any) => {
-	const user = await User.create(data)
-		.then((user: any) => {
-			// TODO user should have a user type
-			const userToken = jwt.sign(
+const createUser = async (request: any, res: any): Promise<User> => {
+	const user: User = await User.create(request)
+		.then((user: User) => {
+			const userToken: string = jwt.sign(
 				{
-					id: user.id, 
+					id: user.id,
 				},
 				process.env.SECRET_KEY
 			);
 
 			return { isSuccess: true, accessToken: userToken };
-			// res
-			// 	.cookie("usertoken", userToken, secret, {
-			// 		httpOnly: true,
-			// 	})
-			// 	.json({ msg: "success!" });
 		})
 		.catch((err: any) => {
 			return err;
@@ -32,14 +22,22 @@ const createUser = async (data: any, res: any) => {
 	return user;
 };
 
-const loginUser = async (data: any, res: any) => {
-	const user = await User.findOne({ where: { email: data.email } });
+const loginUser = async (data: {
+	email: string;
+	password: string;
+}): Promise<{ accessToken: string }> => {
+	const user: User | null = await User.findOne({
+		where: { email: data.email },
+	});
 
 	if (user === null) {
 		throw { name: "UserNotFoundError", message: "incorrect credentials" };
 	}
 
-	const correctPassword = await bcrypt.compare(data.password, user.password);
+	const correctPassword: boolean = await bcrypt.compare(
+		data.password,
+		user.password
+	);
 
 	if (!correctPassword) {
 		throw {
@@ -48,37 +46,38 @@ const loginUser = async (data: any, res: any) => {
 		};
 	}
 
-	const userToken = jwt.sign(
+	const userToken: string = jwt.sign(
 		{
 			id: user.id,
 		},
 		process.env.SECRET_KEY
 	);
-	
-	return {accessToken: userToken};
+
+	return { accessToken: userToken };
 };
 
-const logoutUser = async (res: any) => {
-	res.clearCookie("usertoken");
-	res.sendStatus(200);
+const getCurrentUser = async (
+	token: string
+): Promise<{
+	id: number;
+	firstName: string;
+	lastName: string;
+	email: string;
+}> => {
+	const user: User | null = await User.findOne({
+		where: { id: getSessionId(token) },
+	});
+
+	return {
+		id: user?.id!,
+		firstName: user?.firstName!,
+		lastName: user?.lastName!,
+		email: user?.email!,
+	};
 };
 
-// const getCurrentUser = async (res: any) => {
-		
-// 	const user = await User.findOne({ where: { id: res.id.id } });
-	
-// 	return {id: user?.id, firstName: user?.firstName, lastName:	user?.lastName, email: user?.email}
-// };
-const getCurrentUser = async (res: any) => {
-	
-	const user = await User.findOne({ where: { id: getSessionId(res)} });
-	// console.log(user);
-	
-	return {id: user?.id, firstName: user?.firstName, lastName:	user?.lastName, email: user?.email}
-};
-
-const getOneUser = async (id: number, res: any) => {
-	const user = await User.findOne({ where: { id: id } });
+const getOneUser = async (id: number): Promise<User | null> => {
+	const user: User | null = await User.findOne({ where: { id: id } });
 
 	return user;
 };
@@ -86,7 +85,6 @@ const getOneUser = async (id: number, res: any) => {
 module.exports = {
 	createUser,
 	loginUser,
-	logoutUser,
 	getCurrentUser,
 	getOneUser,
 };
