@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 const {
 	getAllIncomeSources,
-	getTransactions,
+	getAllTransactions,
 } = require("../services/incomeSource.service");
 
 const handleGetAllIncomeSources = async (req: Request, res: Response) => {
@@ -15,11 +15,12 @@ const handleGetAllIncomeSources = async (req: Request, res: Response) => {
 	}
 };
 
-const handleRetrieveTransactions = async (req: Request, res: Response) => {
+const handleGetAllTransactions = async (req: Request, res: Response) => {
 	try {
 		console.log("retrieving transactions...");
 
-		const transactions = await getTransactions(req.cookies.usertoken);
+		const transactions = await getAllTransactions(req.cookies.usertoken);
+		console.log("transactions recieved...")
 		return res.json(transactions);
 	} catch (error: any) {
 		return res.status(400).json(error);
@@ -28,5 +29,5 @@ const handleRetrieveTransactions = async (req: Request, res: Response) => {
 
 module.exports = {
 	handleGetAllIncomeSources,
-	handleRetrieveTransactions,
+	handleGetAllTransactions,
 };

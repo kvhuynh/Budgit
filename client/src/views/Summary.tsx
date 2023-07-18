@@ -56,13 +56,13 @@ const fadeInUp = {
 	initial: {
 		y: 60,
 		opacity: 0,
-		transition: { duration: 1, ease: easing },
+		transition: { duration: 6.5, ease: easing },
 	},
 	animate: {
 		y: 0,
 		opacity: 1,
 		transition: {
-			duration: 1,
+			duration: 6.5,
 			ease: easing,
 		},
 	},
@@ -115,22 +115,20 @@ const ContentStyle2 = styled(Box)();
 export const Summary = (props: any) => {
 	const [values, setValues] = useState<UserState>(initialState);
 	const navigate = useNavigate();
-	const [linkToken, setLinkToken] = useState(null);
+	const [linkToken, setLinkToken] = useState<string>("");
 	const [incomeSources, setIncomeSources] = useState<any>([]);
 	const [totalWorth, setTotalWorth] = useState<number>(0);
 	const [transactions, setTransactions] = useState<any>([]);
 	const [isRetrieved, setIsRetrieved] = useState(false);
 	const [reload, setReload] = useState(false);
 
-	const [loggedIn, setLoggedIn] = useState(false);
 
-	const { open, ready } = usePlaidLink({
+	const { open } = usePlaidLink({
 		token: linkToken,
 		onSuccess: (publicToken, metadata) => {
 			exchangeTokens(publicToken, Cookies.get("token")!)
 				.then((item: any) => {
 					setIncomeSources([...incomeSources, item]);
-					// handleReloadOnCreate();
 					setReload(!reload);
 				})
 				.catch((error: any) => {
@@ -143,65 +141,34 @@ export const Summary = (props: any) => {
 		getCurrentUser()
 			.then((user: UserState) => {
 				if (Object.keys(user).length === 0) {
-					// localStorage.clear();
 					Cookies.remove("token");
 					navigate("/login");
 				} else {
-					console.log(user);
 					setValues(user);
+					createLinkToken()
+						.then((token: any) => {
+							console.log(token);
+							setLinkToken(token.link_token);
+						})
+						.catch((error: any) => {
+							console.log(error);
+						});
 				}
 			})
 			.then(() => {
-				createLinkToken()
-					.then((token: any) => {
-						setLinkToken(token.link_token);
-					})
-					.catch((error: any) => {
-						console.log(error);
-					});
-			})
-			.then(() => {
 				getAllIncomeSources().then((incomeSources: any) => {
-					console.log(incomeSources);
-					
 					setIncomeSources(incomeSources.incomeSources);
 					setTotalWorth(incomeSources.total);
-					setReload(!reload)
 				});
+			})
+			.then(() => {
+				retrieveTransactions();
 			})
 			.catch((error) => {
 				Cookies.remove("token");
 				navigate("/login");
 			});
-		// createLinkToken()
-		// 	.then((token: any) => {
-
-		// 		setLinkToken(token.link_token);
-		// 	})
-		// 	.catch((error: any) => {
-		// 		console.log(error);
-		// 	});
-
-		// getAllIncomeSources()
-		// 	.then((incomeSources: any) => {
-		// 		setIncomeSources(incomeSources.incomeSources);
-		// 		setTotalWorth(incomeSources.total);
-		// 	})
-		// 	.then(() => {
-		// 		setIsRetrieved(true);
-		// 	})
-		// 	.catch((error: any) => {
-		// 		console.log(error);
-		// 	});
-
-		// retrieveTransactions();
-
-		// getCurrentUser(token)
-		// 	.then((data) => {})
-		// 	.catch(() => {
-		// 		navigate("/login");
-		// 	});
-	}, [totalWorth]);
+	}, [reload]);
 
 	// useEffect(() => {
 	// 		retrieveTransactions()
@@ -211,6 +178,8 @@ export const Summary = (props: any) => {
 	const retrieveTransactions = () => {
 		getAllTransactions()
 			.then((transactions: any) => {
+				console.log(transactions[0]);
+				
 				setTransactions(transactions[0]);
 			})
 			.catch((error: any) => {
@@ -270,8 +239,6 @@ export const Summary = (props: any) => {
 	// }
 	const handleReloadOnCreate = () => {
 		setValues({ ...values, reload: !values.reload });
-		// Cookies.remove("summary");
-		// setIsRetrieved(false);
 	};
 
 	const handleOnClick = () => {
@@ -309,6 +276,8 @@ export const Summary = (props: any) => {
 										<Stack direction="row" spacing={2}>
 											<IconButton
 												onClick={() => {
+													console.log(linkToken);
+													
 													open();
 												}}
 												sx={{
@@ -339,8 +308,8 @@ export const Summary = (props: any) => {
 									<Box component={motion.div} {...fadeInUp}>
 										<SocialAuth />
 									</Box> */}
-									{/* <TransactionTable data={transactions}></TransactionTable> */}
-									<TransactionTable></TransactionTable>
+									<TransactionTable data={transactions}></TransactionTable>
+									{/* <TransactionTable></TransactionTable> */}
 								</ContentStyle1>
 							</Container>
 						</Grid>

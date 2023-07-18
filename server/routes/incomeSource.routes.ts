@@ -5,12 +5,12 @@ const { authenticate } = require("../config/jwt.config");
 
 const {
     handleGetAllIncomeSources,
-    handleRetrieveTransactions
+    handleGetAllTransactions
 } = require("../controllers/incomeSource.controller");
 
 const router = express.Router();
 
 router.get("/", authenticate, handleGetAllIncomeSources);
-router.get("/transactions", authenticate, handleRetrieveTransactions);
+router.get("/transactions", authenticate, handleGetAllTransactions);
 
 module.exports = { incomeSourceRouter: router };

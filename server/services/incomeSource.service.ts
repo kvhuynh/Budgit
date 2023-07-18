@@ -15,9 +15,6 @@ const getAllIncomeSources = async (userToken: string): Promise<{ incomeSources: 
 		where: { user_id: userSession },
 	});
 
-	console.log(accessIncomeSources);
-	
-
 	const incomeSources: any[] = await retrieveBankInformation(accessIncomeSources);
 
 	let total: number = 0;
@@ -28,26 +25,29 @@ const getAllIncomeSources = async (userToken: string): Promise<{ incomeSources: 
             
 		}
 	}
-
+	console.log();
+	
 	return { incomeSources: incomeSources, total: total };
 
 };
 
-const getTransactions = async (userToken: string) => {
+const getAllTransactions = async (userToken: string) => {
 	const userSession = getSessionId(userToken);
-
+	
 	const accessIncomeSources = await IncomeSource.findAll({
 		where: { user_id: userSession },
 	});
 
 	const transactions = await retrieveTransactions(accessIncomeSources);
 	const accessToken = accessIncomeSources[0].accessToken;
-	retrieveInstitution(accessToken)
+	let test = await retrieveInstitution(accessToken)
+	console.log(test);
+	
 	    
 	return transactions;
 };
 
 module.exports = {
 	getAllIncomeSources,
-	getTransactions,
+	getAllTransactions,
 };
