@@ -1,6 +1,6 @@
 import { User } from "../models/user.model";
 import { IncomeSource } from "../models/incomeSource.model";
-// import {Create F} from "plaid-link"
+import { Transaction } from "plaid";
 
 const { getSessionId } = require("../utilities/getSessionId.utilities");
 
@@ -38,7 +38,7 @@ const basicLinkTokenObject = {
 	country_codes: ["US"],
 };
 
-const createLinkToken = async () => {
+const createLinkToken = async (): Promise<string> => {
 	const linkTokenObject = {
 		...basicLinkTokenObject,
 		products: ["transactions"],
@@ -92,7 +92,7 @@ const retrieveInstitution = async (accessToken: any) => {
 };
 
 // called from incomeService.ts to retrieve account info via access token
-const retrieveBankInformation = async (accessTokens: any) => {
+const retrieveBankInformation = async (accessTokens: any): Promise<any[]> => {
 	let bankList = [];
 
 	try {
@@ -106,6 +106,7 @@ const retrieveBankInformation = async (accessTokens: any) => {
 		return bankList;
 	} catch (error: any) {
 		console.log(error);
+		return [];
 	}
 };
 
