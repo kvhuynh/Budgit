@@ -46,7 +46,8 @@ export const TransactionTable = (props: any) => {
 		// 		rowsPerPageOptions={[5]}
 		// 	/>
 		// </div>
-		<Box sx={{ height: 400, width: "100%" }}>
+		<Box sx={{ height: 400, width: "100%", padding: 2 }}>
+			Recent Transactions
 			<DataGrid
 				rows={rows}
 				columns={columns}

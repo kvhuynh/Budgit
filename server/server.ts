@@ -33,6 +33,7 @@ app.use("/api/googleAuth/", googleRouter)
 
 // app.use(cookieParser());
 // app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+
 app.listen(port, () => {
 	console.log(`Listening on port ${port} for requests to respond to`);
 });

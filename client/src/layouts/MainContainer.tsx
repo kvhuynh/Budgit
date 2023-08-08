@@ -8,6 +8,7 @@ import { Route, Routes, useParams } from "react-router-dom";
 import About from "../views/About";
 import Budgets from "../views/Budgets";
 import Summary from "../views/Summary";
+import Drawer from "../components/Drawer"
 // import Transactions from "../views/Transactions";
 // import ViewBudget from "../views/ViewBudget";
 // import ViewBudgetItem from "../views/ViewBudgetItem";
