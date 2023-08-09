@@ -1,5 +1,6 @@
 // // import './App.css';
-import MainContainer from "./layouts/MainContainer";
+import MainContainer from "../layouts/MainContainer";
+import Drawer from "../layouts/Drawer"
 
 // // function App() {
 // //   return (
@@ -13,8 +14,8 @@ import MainContainer from "./layouts/MainContainer";
 
 import Box from '@mui/material/Box';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import NightModeToggle from "./components/NightModeToggle"
-import { useThemeContext } from "./themes/ThemeContextProvider"
+import NightModeToggle from "../components/NightModeToggle"
+import { useThemeContext } from "../themes/ThemeContextProvider"
 
 export default function App() {
 
@@ -25,6 +26,7 @@ export default function App() {
       <CssBaseline>
       {/* <NightModeToggle></NightModeToggle> */}
       <MainContainer></MainContainer>
+      {/* <Drawer></Drawer> */}
 
       </CssBaseline>
     </ThemeProvider>

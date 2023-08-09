@@ -7,8 +7,10 @@ import { Route, Routes, useParams } from "react-router-dom";
 
 import About from "../views/About";
 import Budgets from "../views/Budgets";
-import Summary from "../views/Summary";
-import Drawer from "../components/Drawer"
+// import Summary from "../views/Summary";
+import { Summary } from "../views/Summary";
+import Drawer from "./Drawer"
+import Dashboard from "../views/Dashboard";
 // import Transactions from "../views/Transactions";
 // import ViewBudget from "../views/ViewBudget";
 // import ViewBudgetItem from "../views/ViewBudgetItem";
@@ -42,12 +44,14 @@ export const MainContainer = (props: any) => {
 	return (
 		<Box sx={{ display: "flex" }}>
 			<Box component="main" sx={{ flexGrow: 1 }}>
+				{/* <Drawer></Drawer> */}
 				<Routes>
 					{/* <Route path="/"></Route> */}
 					{/* <Route path="/" element={<LoginRegister/>}></Route> */}
 					<Route path="/login" element={<Login />}></Route>
 					<Route path="/register" element={<Register />}></Route>
-					<Route path="/summary" element={<Summary />} />
+					{/* <Route path="/summary" element={<Summary />} /> */}
+					<Route path="/summary" element={<Summary/>}></Route>
 					<Route path="/budgets" element={<Budgets test="test" />}></Route>
 
 				</Routes>
