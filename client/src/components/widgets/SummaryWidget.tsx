@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import { Container, IconButton, Stack } from "@mui/material";
 import { Icon } from "@iconify/react";
@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import Cards from "react-credit-cards-2";
 
 import { TypeAnimation } from "react-type-animation";
 
@@ -19,7 +20,10 @@ import { useNavigate } from "react-router-dom";
 
 import { getCurrentUser, logoutUser } from "../../services/auth/userApiService";
 
-import { createLinkToken, exchangeTokens } from "../../services/plaidApiService";
+import {
+	createLinkToken,
+	exchangeTokens,
+} from "../../services/plaidApiService";
 
 import styled from "@emotion/styled";
 import { motion } from "framer-motion";
@@ -70,10 +74,10 @@ const fadeInUp = {
 };
 
 const RootStyle = styled("div")({
-	background: "linear-gradient(180deg, #c4beee 0%, #0a5cff 100%)",
+	// background: "linear-gradient(180deg, #c4beee 0%, #0a5cff 100%)",
 	// height: "100rem",
 	minHeight: "100vh",
-	minWidth: "100vw",
+	// minWidth: "100vw",
 	display: "grid",
 	// flexDirection: "row",
 	// placeItems: "center",
@@ -89,33 +93,29 @@ const commonBoxStyles: any = {
 	padding: 25,
 	margin: "auto",
 	display: "flex",
+	background: "#fff",
 	justifyContent: "center",
 	flexDirection: "column",
-	background: "#fff",
+	// border: "solid 1px",
 	borderRadius: 50,
+	borderColor: "#000",
 };
 
 const ContentStyle = styled(Box)(commonBoxStyles);
 
 const ContentStyle1 = styled(Box)({
-	width: "90%",
-	// height: "40%",
 	padding: 25,
 	margin: "auto",
 	display: "flex",
-	justifyContent: "center",
-	alignItems: "center",
 	background: "#fff",
+	justifyContent: "center",
+	flexDirection: "column",
 	borderRadius: 50,
-	// marginTop: "5%",
+	borderColor: "#000",
 });
 
-const ContentStyle2 = styled(Box)();
-// {...ContentStyle1}
-export {}
-
 export const SummaryWidget: React.FC = () => {
-    const [values, setValues] = useState<UserState>(initialState);
+	const [values, setValues] = useState<UserState>(initialState);
 	const navigate = useNavigate();
 	const [linkToken, setLinkToken] = useState<string>("");
 	const [incomeSources, setIncomeSources] = useState<any>([]);
@@ -123,7 +123,6 @@ export const SummaryWidget: React.FC = () => {
 	const [transactions, setTransactions] = useState<any>([]);
 	const [isRetrieved, setIsRetrieved] = useState(false);
 	const [reload, setReload] = useState(false);
-
 
 	const { open } = usePlaidLink({
 		token: linkToken,
@@ -176,7 +175,7 @@ export const SummaryWidget: React.FC = () => {
 		getAllTransactions()
 			.then((transactions: any) => {
 				console.log(transactions[0]);
-				
+
 				setTransactions(transactions[0]);
 			})
 			.catch((error: any) => {
@@ -194,67 +193,46 @@ export const SummaryWidget: React.FC = () => {
 		navigate("/login");
 	};
 
-    return (
-		<>
-			<RootStyle>
-				<Box sx={{ flexGrow: 1, display: "flex" }}>
-					<Grid container spacing={2}>
-						<Grid item xs={12}>
-							<ContentStyle1
-								boxShadow={3}
-								onClick={handleOnClick}
-								component={motion.div}
-								{...fadeInUp}
-							>
-								Welcome back {values.firstName}
-							</ContentStyle1>
-						</Grid>
-						<Grid item xs={3}>
-							<Container maxWidth="sm">
-								<ContentStyle component={motion.div} {...fadeInUp}>
-									<HeadingStyle component={motion.div} {...fadeInUp}>
-										Total worth : {totalWorth}
-										<PieChart
-											totalWorth={totalWorth}
-											data={incomeSources}
-										></PieChart>
-									</HeadingStyle>
-									<Box component={motion.div} {...fadeInUp}>
-										<Stack direction="row" spacing={2}>
-											<IconButton
-												onClick={() => {
-													console.log(linkToken);
-													
-													open();
-												}}
-												sx={{
-													border: "2px solid #ccc",
-													borderRadius: "5px",
-													padding: "0.5675rem",
-													flex: 1,
-												}}
-											>
-												<Icon icon="mdi:bank" width={22} height={22} /> Connect
-												a bank account
-											</IconButton>
-										</Stack>
-									</Box>
-								</ContentStyle>
-							</Container>
-						</Grid>
-						<Grid item xs={9}>
-							<Container maxWidth="lg">
-								<ContentStyle1 component={motion.div} {...fadeInUp}>
-									<TransactionTable data={transactions}></TransactionTable>
-								</ContentStyle1>
-							</Container>
-						</Grid>
-					</Grid>
-				</Box>
-			</RootStyle>
+	return (
+			<Container maxWidth="sm">
+				<ContentStyle
+					sx={{ boxShadow: 5 }}
+					component={motion.div}
+					{...fadeInUp}
+				>
+					<HeadingStyle component={motion.div} {...fadeInUp}>
+						Summary
+						<Cards
+							name={values.firstName + " " + values.lastName}
+							number="4111 1111 1111 1111"
+							expiry="10/20"
+							cvc="737"
+						/>
+						<PieChart totalWorth={totalWorth} data={incomeSources}></PieChart>
+					</HeadingStyle>
+					<Box component={motion.div} {...fadeInUp}>
+						<Stack direction="row" spacing={2}>
+							<IconButton
+								onClick={() => {
+									console.log(linkToken);
 
-		</>
-    )
-}
+									open();
+								}}
+								sx={{
+									border: "2px solid #ccc",
+									borderRadius: "5px",
+									padding: "0.5675rem",
+									flex: 1,
+								}}
+							>
+								<Icon icon="mdi:bank" width={22} height={22} /> Connect a bank
+								account
+							</IconButton>
+						</Stack>
+					</Box>
+				</ContentStyle>
+			</Container>
+	);
+};
 
 export default SummaryWidget;
